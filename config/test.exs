@@ -17,3 +17,7 @@ config :achatdemy, AchatdemyWeb.Endpoint,
 
 # Print only warnings and errors during test
 config :logger, level: :warn
+
+if File.exists?("test.secret.exs") do
+  import_config("test.secret.exs")
+end
