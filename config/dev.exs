@@ -27,7 +27,7 @@ config :achatdemy, AchatdemyWeb.Endpoint,
       "--mode",
       "development",
       "--watch-stdin",
-      cd: Path.expand("../assets", __DIR__)
+      cd: Path.expand("../app", __DIR__)
     ]
   ]
 
@@ -76,6 +76,6 @@ config :phoenix, :stacktrace_depth, 20
 # Initialize plugs at runtime for faster development compilation
 config :phoenix, :plug_init_mode, :runtime
 
-if File.exists?("dev.secret.exs") do
+if File.exists?(Path.expand(__ENV__.file, "dev.secret.exs")) do
   import_config("dev.secret.exs")
 end
