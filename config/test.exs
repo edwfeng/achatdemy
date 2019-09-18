@@ -18,6 +18,6 @@ config :achatdemy, AchatdemyWeb.Endpoint,
 # Print only warnings and errors during test
 config :logger, level: :warn
 
-if File.exists?(Path.expand(__ENV__.file, "test.secret.exs")) do
+if File.exists?(Path.expand(Path.join(__ENV__.file, "../test.secret.exs"))) do
   import_config("test.secret.exs")
 end
