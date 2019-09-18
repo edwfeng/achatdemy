@@ -16,7 +16,7 @@ defmodule AchatdemyWeb.Router do
   scope "/", AchatdemyWeb do
     pipe_through :browser
 
-    get "/", PageController, :index
+    get "/otherthing", PageController, :index
   end
 
   # Other scopes may use custom stacks.
