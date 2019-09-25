@@ -82,7 +82,7 @@ function watch() {
       let messages;
       if (err) {
         if (!err.message) {
-          return reject(err);
+          // return reject(err);
         }
         messages = formatWebpackMessages({
           errors: [err.message],
@@ -99,7 +99,7 @@ function watch() {
         if (messages.errors.length > 1) {
           messages.errors.length = 1;
         }
-        return reject(new Error(messages.errors.join('\n\n')));
+        // return reject(new Error(messages.errors.join('\n\n')));
       }
       if (
         process.env.CI &&
@@ -113,7 +113,7 @@ function watch() {
             'Most CI servers set it automatically.\n'
           )
         );
-        return reject(new Error(messages.warnings.join('\n\n')));
+        // return reject(new Error(messages.warnings.join('\n\n')));
       }
     });
   });
