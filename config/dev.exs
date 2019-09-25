@@ -23,10 +23,7 @@ config :achatdemy, AchatdemyWeb.Endpoint,
   check_origin: false,
   watchers: [
     node: [
-      "node_modules/webpack/bin/webpack.js",
-      "--mode",
-      "development",
-      "--watch-stdin",
+      "scripts/watch.js",
       cd: Path.expand("../app", __DIR__)
     ]
   ]
