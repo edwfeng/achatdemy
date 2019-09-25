@@ -5,8 +5,6 @@ defmodule Achatdemy.Repo.Migrations.CreateMsgFilesXref do
     create table(:msg_files_xref) do
       add :message_id, references(:messages, on_delete: :nothing), null: false
       add :file_id, references(:files, on_delete: :nothing), null: false
-
-      timestamps()
     end
 
     create index(:msg_files_xref, [:message_id])
