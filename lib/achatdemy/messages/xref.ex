@@ -2,9 +2,9 @@ defmodule Achatdemy.Messages.Xref do
   use Ecto.Schema
   import Ecto.Changeset
 
-  schema "messages_files_xref" do
-    field :message_id, :id
-    field :file_id, :id
+  schema "msg_files_xref" do
+    belongs_to :message_id, Achatdemy.Chats.Message
+    belongs_to :file_id, Achatdemy.Messages.File
 
     timestamps()
   end

@@ -3,8 +3,8 @@ defmodule Achatdemy.Repo.Migrations.CreateChats do
 
   def change do
     create table(:chats) do
-      add :title, :string
-      add :type, :string
+      add :title, :text
+      add :type, :integer
       add :author_id, references(:users, on_delete: :nothing)
       add :comm_id, references(:comms, on_delete: :nothing)
 

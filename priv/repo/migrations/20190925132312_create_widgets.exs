@@ -3,8 +3,8 @@ defmodule Achatdemy.Repo.Migrations.CreateWidgets do
 
   def change do
     create table(:widgets) do
+      add :desc, :text
       add :uri, :string
-      add :desc, :string
       add :chat_id, references(:chats, on_delete: :nothing)
 
       timestamps()

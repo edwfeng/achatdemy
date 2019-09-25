@@ -3,9 +3,9 @@ defmodule Achatdemy.Repo.Migrations.CreateMessages do
 
   def change do
     create table(:messages) do
-      add :msg, :string
+      add :msg, :text
       add :chat_id, references(:chats, on_delete: :nothing)
-      add :author_id, references(:chats, on_delete: :nothing)
+      add :author_id, references(:users, on_delete: :nothing)
 
       timestamps()
     end

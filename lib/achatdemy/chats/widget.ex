@@ -13,7 +13,7 @@ defmodule Achatdemy.Chats.Widget do
   @doc false
   def changeset(widget, attrs) do
     widget
-    |> cast(attrs, [:uri, :desc])
-    |> validate_required([:uri, :desc])
+    |> cast(attrs, [:desc, :uri])
+    |> validate_required([:desc, :uri])
   end
 end

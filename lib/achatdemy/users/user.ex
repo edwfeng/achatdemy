@@ -13,7 +13,7 @@ defmodule Achatdemy.Users.User do
   @doc false
   def changeset(user, attrs) do
     user
-    |> cast(attrs, [:username, :email, :password])
-    |> validate_required([:username, :email, :password])
+    |> cast(attrs, [:username, :password, :email])
+    |> validate_required([:username, :password, :email])
   end
 end

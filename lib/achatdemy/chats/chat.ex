@@ -4,7 +4,7 @@ defmodule Achatdemy.Chats.Chat do
 
   schema "chats" do
     field :title, :string
-    field :type, :string
+    field :type, :integer
     field :author_id, :id
     field :comm_id, :id
 

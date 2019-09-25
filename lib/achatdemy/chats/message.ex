@@ -7,6 +7,8 @@ defmodule Achatdemy.Chats.Message do
     field :chat_id, :id
     field :author_id, :id
 
+    many_to_many(:files, Achatdemy.Messages.File, join_through: "msg_files_xref")
+
     timestamps()
   end
 
