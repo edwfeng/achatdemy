@@ -12,4 +12,11 @@ defmodule AchatdemyWeb.Schema.ContentTypes do
     field :id, non_null(:id)
     field :name, non_null(:string)
   end
+
+  object :perm do
+    field :id, non_null(:id)
+    field :chmod, non_null(:integer)
+    field :user_id, non_null(:id)
+    field :comm_id, non_null(:id)
+  end
 end

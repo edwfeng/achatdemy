@@ -33,7 +33,7 @@ Achatdemy.Repo.insert!(%Achatdemy.Users.Perm{
 })
 
 Achatdemy.Repo.insert!(%Achatdemy.Users.Perm{
-  chmod: << 1 >>,
+  chmod: << 0 >>,
   user_id: 2,
   comm_id: 1
 })

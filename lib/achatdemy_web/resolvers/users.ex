@@ -8,4 +8,8 @@ defmodule AchatdemyWeb.Resolvers.Users do
   def list_user(_, %{id: id}, _) do
     {:ok, Users.get_user!(id)}
   end
+
+  def list_perms(_, %{user_id: user_id}, _) do
+    {:ok, Users.list_user_perms_user(user_id)}
+  end
 end

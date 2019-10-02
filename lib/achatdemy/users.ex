@@ -133,6 +133,12 @@ defmodule Achatdemy.Users do
   """
   def get_perm!(id), do: Repo.get!(Perm, id)
 
+  def list_user_perms_user(uid) do
+    Perm
+    |> where(user_id: ^uid)
+    |> Repo.all()
+  end
+
   @doc """
   Creates a perm.
 
