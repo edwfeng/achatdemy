@@ -13,5 +13,16 @@ defmodule AchatdemyWeb.Schema do
       arg :id, non_null(:id)
       resolve &AchatdemyWeb.Resolvers.Users.list_user/3
     end
+
+    @desc "Get a list of communities"
+    field :comms, list_of(:comm) do
+      resolve &AchatdemyWeb.Resolvers.Comms.list_comms/3
+    end
+
+    @desc "Get a community by its id"
+    field :comm, :comm do
+      arg :id, non_null(:id)
+      resolve &AchatdemyWeb.Resolvers.Comms.list_comm/3
+    end
   end
 end
