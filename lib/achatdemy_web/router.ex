@@ -1,5 +1,6 @@
 defmodule AchatdemyWeb.Router do
   use AchatdemyWeb, :router
+  use Pow.Phoenix.Router
 
   pipeline :browser do
     plug :accepts, ["html"]
@@ -8,7 +9,10 @@ defmodule AchatdemyWeb.Router do
     plug :protect_from_forgery
     plug :put_secure_browser_headers
   end
-
+  pipeline :protected do
+    plug Pow.Plug.RequireAuthenticated,
+      error_handler: Pow.Phoenix.PlugErrorHandler
+  end
   pipeline :api do
     plug :accepts, ["json"]
   end
@@ -18,6 +22,7 @@ defmodule AchatdemyWeb.Router do
 
     get "/", PageController, :index
     get "/old", PageController, :oldindex
+
   end
 
   # Other scopes may use custom stacks.

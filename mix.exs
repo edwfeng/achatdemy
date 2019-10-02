@@ -46,7 +46,8 @@ defmodule Achatdemy.MixProject do
       {:absinthe, "~> 1.4"},
       {:absinthe_plug, "~> 1.4"},
       {:absinthe_phoenix, "~> 1.4"},
-      {:credo, "~> 1.1.0", only: [:dev, :test], runtime: false}
+      {:credo, "~> 1.1.0", only: [:dev, :test], runtime: false},
+      {:pow, "~> 1.0.13"}
     ]
   end
 
