@@ -1,4 +1,4 @@
-defmodule Achatdemy.Chats.Message do
+defmodule Achatdemy.Messages.Message do
   use Ecto.Schema
   import Ecto.Changeset
 

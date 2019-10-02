@@ -45,19 +45,19 @@ Achatdemy.Repo.insert!(%Achatdemy.Chats.Chat{
   comm_id: 1
 })
 
-Achatdemy.Repo.insert!(%Achatdemy.Chats.Message{
+Achatdemy.Repo.insert!(%Achatdemy.Messages.Message{
   msg: "First!",
   chat_id: 1,
   author_id: 1
 })
 
-Achatdemy.Repo.insert!(%Achatdemy.Chats.Message{
+Achatdemy.Repo.insert!(%Achatdemy.Messages.Message{
   msg: "Not first...",
   chat_id: 1,
   author_id: 2
 })
 
-msg = Achatdemy.Repo.insert!(%Achatdemy.Chats.Message{
+msg = Achatdemy.Repo.insert!(%Achatdemy.Messages.Message{
   msg: "Test with file",
   chat_id: 1,
   author_id: 1
