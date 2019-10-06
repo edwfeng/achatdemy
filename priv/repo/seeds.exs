@@ -42,26 +42,26 @@ Achatdemy.Users.link_user_comm(user2.id, comm1.id, %{chmod: << 0 >>})
 chat1 = %Chat{
   title: "This is a chat",
   type: 3,
-  author_id: user1.id,
+  user_id: user1.id,
   comm_id: comm1.id
 } |> Repo.insert!
 
 message1 = %Message{
   msg: "First!",
   chat_id: chat1.id,
-  author_id: user1.id,
+  user_id: user1.id,
 } |> Repo.insert!
 
 message2 = %Message{
   msg: "Not first...",
   chat_id: chat1.id,
-  author_id: user2.id
+  user_id: user2.id
 } |> Repo.insert!
 
 message3 = %Message{
   msg: "Test with file",
   chat_id: chat1.id,
-  author_id: user1.id
+  user_id: user1.id
 } |> Repo.insert!
 
 file1 = %File{

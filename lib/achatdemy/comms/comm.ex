@@ -3,8 +3,11 @@ defmodule Achatdemy.Comms.Comm do
   import Ecto.Changeset
 
   @primary_key {:id, :binary_id, autogenerate: true}
+  @foreign_key_type :binary_id
   schema "comms" do
     field :name, :string
+
+    has_many :chats, Achatdemy.Chats.Chat
 
     many_to_many(:users, Achatdemy.Users.User, join_through: "user_perms")
 

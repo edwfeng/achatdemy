@@ -3,6 +3,7 @@ defmodule Achatdemy.Messages.File do
   import Ecto.Changeset
 
   @primary_key {:id, :binary_id, autogenerate: true}
+  @foreign_key_type :binary_id
   schema "files" do
     field :name, :string
     field :path, :string
