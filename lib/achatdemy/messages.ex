@@ -199,16 +199,11 @@ defmodule Achatdemy.Messages do
   end
 
   def link_msg_file(message_id, file_id) do
-    file = get_file!(file_id)
-
-    message = message_id
-    |> get_message!
-    |> Repo.preload(:files)
-
-    message
-    |> Ecto.Changeset.change
-    |> Ecto.Changeset.put_assoc(:files, [file | message.files])
-    |> Repo.update!
+    %Achatdemy.Messages.MsgFilesXref{
+      message_id: message_id,
+      file_id: file_id
+    }
+    |> Repo.insert!
   end
 
   def unlink_msg_file(message_id, file_id) do

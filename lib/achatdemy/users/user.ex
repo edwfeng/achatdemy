@@ -8,6 +8,8 @@ defmodule Achatdemy.Users.User do
     field :password, :string
     field :username, :string
 
+    many_to_many(:comms, Achatdemy.Comms.Comm, join_through: "user_perms")
+
     timestamps()
   end
 

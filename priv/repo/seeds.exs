@@ -36,17 +36,8 @@ comm1 = %Comm{
   name: "Default Comm"
 } |> Repo.insert!
 
-perm1 = %Perm{
-  chmod: << 1 >>,
-  user_id: user1.id,
-  comm_id: comm1.id
-} |> Repo.insert!
-
-perm2 = %Perm{
-  chmod: << 0 >>,
-  user_id: user2.id,
-  comm_id: comm1.id
-} |> Repo.insert!
+Achatdemy.Users.link_user_comm(user1.id, comm1.id, %{chmod: << 1 >>})
+Achatdemy.Users.link_user_comm(user2.id, comm1.id, %{chmod: << 0 >>})
 
 chat1 = %Chat{
   title: "This is a chat",

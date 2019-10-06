@@ -203,4 +203,20 @@ defmodule Achatdemy.Users do
   def change_perm(%Perm{} = perm) do
     Perm.changeset(perm, %{})
   end
+
+  def link_user_comm(user_id, comm_id, attrs) when is_map(attrs) do
+    %Perm{
+      user_id: user_id,
+      comm_id: comm_id
+    }
+    |> Perm.changeset(attrs)
+    |> Repo.insert!
+  end
+
+  def unlink_user_comm(user_id, comm_id) do
+    Perm
+    |> where(user_id: ^user_id)
+    |> where(comm_id: ^comm_id)
+    |> Repo.delete_all
+  end
 end

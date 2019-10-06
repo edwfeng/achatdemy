@@ -6,6 +6,8 @@ defmodule Achatdemy.Comms.Comm do
   schema "comms" do
     field :name, :string
 
+    many_to_many(:users, Achatdemy.Users.User, join_through: "user_perms")
+
     timestamps()
   end
 
