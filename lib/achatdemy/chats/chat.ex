@@ -2,11 +2,12 @@ defmodule Achatdemy.Chats.Chat do
   use Ecto.Schema
   import Ecto.Changeset
 
+  @primary_key {:id, :binary_id, autogenerate: true}
   schema "chats" do
     field :title, :string
     field :type, :integer
-    field :author_id, :id
-    field :comm_id, :id
+    field :author_id, :binary_id
+    field :comm_id, :binary_id
 
     timestamps()
   end

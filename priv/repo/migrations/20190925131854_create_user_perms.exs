@@ -2,10 +2,11 @@ defmodule Achatdemy.Repo.Migrations.CreateUserPerms do
   use Ecto.Migration
 
   def change do
-    create table(:user_perms) do
+    create table(:user_perms, primary_key: false) do
+      add :id, :uuid, primary_key: true
       add :chmod, :binary
-      add :user_id, references(:users, on_delete: :nothing)
-      add :comm_id, references(:comms, on_delete: :nothing)
+      add :user_id, references(:users, on_delete: :nothing, type: :uuid)
+      add :comm_id, references(:comms, on_delete: :nothing, type: :uuid)
 
       timestamps()
     end

@@ -10,64 +10,75 @@
 # We recommend using the bang functions (`insert!`, `update!`
 # and so on) as they will fail if something goes wrong.
 
-Achatdemy.Repo.insert!(%Achatdemy.Users.User{
+alias Achatdemy.Users.User
+alias Achatdemy.Users.Perm
+alias Achatdemy.Comms.Comm
+alias Achatdemy.Chats.Chat
+alias Achatdemy.Chats.Widget
+alias Achatdemy.Messages.File
+alias Achatdemy.Messages.Message
+
+alias Achatdemy.Repo
+
+user1 = %User{
   username: "Anthony",
   password: "pass1",
   email: "anthony@example.com"
-})
+} |> Repo.insert!
 
-Achatdemy.Repo.insert!(%Achatdemy.Users.User{
+user2 = %User{
   username: "Jeremy",
   password: "pass2",
   email: "jeremy@example.com"
-})
+} |> Repo.insert!
 
-Achatdemy.Repo.insert!(%Achatdemy.Comms.Comm{
+comm1 = %Comm{
   name: "Default Comm"
-})
+} |> Repo.insert!
 
-Achatdemy.Repo.insert!(%Achatdemy.Users.Perm{
+perm1 = %Perm{
   chmod: << 1 >>,
-  user_id: 1,
-  comm_id: 1
-})
+  user_id: user1.id,
+  comm_id: comm1.id
+} |> Repo.insert!
 
-Achatdemy.Repo.insert!(%Achatdemy.Users.Perm{
+perm2 = %Perm{
   chmod: << 0 >>,
-  user_id: 2,
-  comm_id: 1
-})
+  user_id: user2.id,
+  comm_id: comm1.id
+} |> Repo.insert!
 
-Achatdemy.Repo.insert!(%Achatdemy.Chats.Chat{
+chat1 = %Chat{
   title: "This is a chat",
   type: 3,
-  author_id: 1,
-  comm_id: 1
-})
+  author_id: user1.id,
+  comm_id: comm1.id
+} |> Repo.insert!
 
-Achatdemy.Repo.insert!(%Achatdemy.Messages.Message{
+message1 = %Message{
   msg: "First!",
-  chat_id: 1,
-  author_id: 1
-})
+  chat_id: chat1.id,
+  author_id: user1.id,
+} |> Repo.insert!
 
-Achatdemy.Repo.insert!(%Achatdemy.Messages.Message{
+message2 = %Message{
   msg: "Not first...",
-  chat_id: 1,
-  author_id: 2
-})
+  chat_id: chat1.id,
+  author_id: user2.id
+} |> Repo.insert!
 
-msg = Achatdemy.Repo.insert!(%Achatdemy.Messages.Message{
+
+msg = Repo.insert!(%Message{
   msg: "Test with file",
-  chat_id: 1,
-  author_id: 1
-}) |> Achatdemy.Repo.preload(:files)
+  chat_id: chat1.id,
+  author_id: user1.id
+}) |> Repo.preload(:files)
 
-file = Achatdemy.Repo.insert!(%Achatdemy.Messages.File{
+file = Repo.insert!(%File{
   name: "Not a virus",
   path: "/usr/lib/virus"
-}) |> Achatdemy.Repo.preload(:messages)
+}) |> Repo.preload(:messages)
 
 Ecto.Changeset.change(msg)
 |> Ecto.Changeset.put_assoc(:files, [file])
-|> Achatdemy.Repo.update!()
+|> Repo.update!()
