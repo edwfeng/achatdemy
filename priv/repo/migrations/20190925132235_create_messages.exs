@@ -5,7 +5,7 @@ defmodule Achatdemy.Repo.Migrations.CreateMessages do
     create table(:messages, primary_key: false) do
       add :id, :uuid, primary_key: true
       add :msg, :text
-      add :chat_id, references(:chats, on_delete: :nothing, type: :uuid)
+      add :chat_id, references(:chats, on_delete: :delete_all, type: :uuid)
       add :author_id, references(:users, on_delete: :nothing, type: :uuid)
 
       timestamps()
