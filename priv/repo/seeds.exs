@@ -11,7 +11,6 @@
 # and so on) as they will fail if something goes wrong.
 
 alias Achatdemy.Users.User
-alias Achatdemy.Users.Perm
 alias Achatdemy.Comms.Comm
 alias Achatdemy.Chats.Chat
 alias Achatdemy.Chats.Widget
@@ -46,13 +45,13 @@ chat1 = %Chat{
   comm_id: comm1.id
 } |> Repo.insert!
 
-message1 = %Message{
+_message1 = %Message{
   msg: "First!",
   chat_id: chat1.id,
   user_id: user1.id,
 } |> Repo.insert!
 
-message2 = %Message{
+_message2 = %Message{
   msg: "Not first...",
   chat_id: chat1.id,
   user_id: user2.id
@@ -72,3 +71,9 @@ file1 = %File{
 Achatdemy.Messages.link_msg_file(message3.id, file1.id)
 Achatdemy.Messages.unlink_msg_file(message3.id, file1.id)
 Achatdemy.Messages.link_msg_file(message3.id, file1.id)
+
+_widget1 = %Widget{
+  desc: "A widget",
+  uri: "scheme:[//authority]path[?query][#fragment]",
+  chat_id: chat1.id
+} |> Repo.insert
