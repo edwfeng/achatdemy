@@ -197,4 +197,24 @@ defmodule Achatdemy.Messages do
   def change_file(%File{} = file) do
     File.changeset(file, %{})
   end
+
+  def link_msg_file(message_id, file_id) do
+    file = get_file!(file_id)
+
+    message = message_id
+    |> get_message!
+    |> Repo.preload(:files)
+
+    message
+    |> Ecto.Changeset.change
+    |> Ecto.Changeset.put_assoc(:files, [file | message.files])
+    |> Repo.update!
+  end
+
+  def unlink_msg_file(message_id, file_id) do
+    Achatdemy.Messages.MsgFilesXref
+    |> where(message_id: ^message_id)
+    |> where(file_id: ^file_id)
+    |> Repo.delete_all
+  end
 end

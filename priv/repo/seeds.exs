@@ -67,18 +67,17 @@ message2 = %Message{
   author_id: user2.id
 } |> Repo.insert!
 
-
-msg = Repo.insert!(%Message{
+message3 = %Message{
   msg: "Test with file",
   chat_id: chat1.id,
   author_id: user1.id
-}) |> Repo.preload(:files)
+} |> Repo.insert!
 
-file = Repo.insert!(%File{
+file1 = %File{
   name: "Not a virus",
   path: "/usr/lib/virus"
-}) |> Repo.preload(:messages)
+} |> Repo.insert!
 
-Ecto.Changeset.change(msg)
-|> Ecto.Changeset.put_assoc(:files, [file])
-|> Repo.update!()
+Achatdemy.Messages.link_msg_file(message3.id, file1.id)
+Achatdemy.Messages.unlink_msg_file(message3.id, file1.id)
+Achatdemy.Messages.link_msg_file(message3.id, file1.id)
