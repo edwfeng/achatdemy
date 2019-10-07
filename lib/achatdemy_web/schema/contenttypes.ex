@@ -15,7 +15,7 @@ defmodule AchatdemyWeb.Schema.ContentTypes do
 
   object :perm do
     field :id, non_null(:id)
-    field :chmod, non_null(:string)
+    field :chmod, non_null(:integer)
     field :user_id, non_null(:id)
     field :comm_id, non_null(:id)
   end

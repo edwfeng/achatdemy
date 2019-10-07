@@ -5,7 +5,7 @@ defmodule Achatdemy.Users.Perm do
   @primary_key false
   @foreign_key_type :binary_id
   schema "user_perms" do
-    field :chmod, :binary
+    field :chmod, :integer
     belongs_to :user, Achatdemy.Users.User
     belongs_to :comm, Achatdemy.Comms.Comm
 
