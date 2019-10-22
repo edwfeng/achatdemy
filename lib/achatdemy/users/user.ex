@@ -6,7 +6,7 @@ defmodule Achatdemy.Users.User do
   @foreign_key_type :binary_id
   schema "users" do
     field :email, :string
-    field :password, :string
+    field :password_hash, :string
     field :username, :string
 
     has_many :chats, Achatdemy.Chats.Chat
@@ -20,7 +20,7 @@ defmodule Achatdemy.Users.User do
   @doc false
   def changeset(user, attrs) do
     user
-    |> cast(attrs, [:username, :password, :email])
-    |> validate_required([:username, :password, :email])
+    |> cast(attrs, [:username, :password_hash, :email])
+    |> validate_required([:username, :password_has, :email])
   end
 end
