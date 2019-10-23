@@ -70,6 +70,7 @@ class LoginForm extends React.Component<{mode: LoginMode}, {}> {
             actions.setErrors({password: "Error signing in. Please try again."});
             actions.setSubmitting(false);
           }
+          // TODO: Ensure username and password field have some width even when the error text is long.
         }} render={(props: FormikProps<LoginFormValues>) => { return (
               <form onSubmit={props.handleSubmit}>
                 <Box><Field component={TextField} name="username" variant="outlined" margin="dense" label="Username" type="text" required /></Box>
