@@ -46,6 +46,7 @@ defmodule Achatdemy.MixProject do
       {:absinthe, "~> 1.4"},
       {:absinthe_plug, "~> 1.4"},
       {:absinthe_phoenix, "~> 1.4"},
+      {:guardian, "~> 2.0"},
       {:credo, "~> 1.1.0", only: [:dev, :test], runtime: false}
     ]
   end
@@ -60,7 +61,7 @@ defmodule Achatdemy.MixProject do
     [
       "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
-      test: ["ecto.create --quiet", "ecto.migrate", "test"]
+      test: ["ecto.drop --quiet", "ecto.create --quiet", "ecto.migrate", "test"]
     ]
   end
 end

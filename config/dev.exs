@@ -10,6 +10,10 @@ config :achatdemy, Achatdemy.Repo,
   pool_size: 10,
   port: 5433
 
+config :achatdemy, Achatdemy.Guardian,
+  issuer: "achatdemy_dev",
+  secret_key: "achatdemy_dev"
+
 # For development, we disable any cache and enable
 # debugging and code reloading.
 #

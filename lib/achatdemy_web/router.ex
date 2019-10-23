@@ -13,6 +13,19 @@ defmodule AchatdemyWeb.Router do
     plug :accepts, ["json"]
   end
 
+  scope "/api" do
+    pipe_through :api
+
+    resources "/auth", AchatdemyWeb.UserController, only: [:create]
+
+    forward "/graphiql", Absinthe.Plug.GraphiQL,
+      schema: AchatdemyWeb.Schema,
+      interface: :simple
+
+    forward "/", Absinthe.Plug,
+      schema: AchatdemyWeb.Schema
+  end
+
   scope "/", AchatdemyWeb do
     pipe_through :browser
 

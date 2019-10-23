@@ -2,10 +2,12 @@ defmodule Achatdemy.Chats.Widget do
   use Ecto.Schema
   import Ecto.Changeset
 
+  @primary_key {:id, :binary_id, autogenerate: true}
+  @foreign_key_type :binary_id
   schema "widgets" do
     field :desc, :string
     field :uri, :string
-    field :chat_id, :id
+    belongs_to :chat, Achatdemy.Chats.Chat
 
     timestamps()
   end

@@ -9,6 +9,10 @@ config :achatdemy, Achatdemy.Repo,
   pool: Ecto.Adapters.SQL.Sandbox,
   port: 5433
 
+config :achatdemy, Achatdemy.Guardian,
+  issuer: "achatdemy_test",
+  secret_key: "achatdemy_test"
+
 # We don't run a server during test. If one is required,
 # you can enable the server option below.
 config :achatdemy, AchatdemyWeb.Endpoint,
