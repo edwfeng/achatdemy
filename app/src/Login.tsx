@@ -1,6 +1,8 @@
 import React from 'react';
 import { MainPalette, DarkPalette } from './palette';
 import { ThemeProvider } from '@material-ui/styles';
+import { Formik, Field, Form, FormikProps, FormikActions } from 'formik';
+import { TextField } from 'formik-material-ui';
 import {
   Box,
   Button,
@@ -9,7 +11,7 @@ import {
   FormControlLabel,
   Tab,
   Tabs,
-  TextField
+  TextField as MuiTextField
 } from '@material-ui/core';
 import logo from './logo.svg';
 import {PaletteOptions} from "@material-ui/core/styles/createPalette";
@@ -27,23 +29,45 @@ enum LoginMode {
   REGISTER
 }
 
+interface LoginFormValues {
+  username: string;
+  password: string;
+}
+
 class LoginForm extends React.Component<{mode: LoginMode}, {}> {
   render() {
     if (this.props.mode === LoginMode.LOGIN) {
       return (
-        <React.Fragment>
-          <Box><TextField variant="outlined" margin="dense" label="User ID (numeric uuid)" required /></Box>
-          <Box><TextField variant="outlined" margin="dense" label="Password" type="password" required /></Box>
-          <Box style={{marginTop: "1em"}}><Button variant="outlined" color="secondary">Sign in</Button></Box>
-        </React.Fragment>
+        <Formik initialValues={{username: "s", password: ""}} validate={(values: LoginFormValues) => {
+          let errors = {};
+          if (!values.username || values.username.length < 1) {
+            errors.username = "Required."
+          }
+          if (!values.password || values.password.length < 1) {
+            errors.password = "Required."
+          }
+          return errors;
+        }} onSubmit={async (values: LoginFormValues, actions: FormikActions<LoginFormValues>) => {
+          // TODO: Move elsewhere
+          console.log(values);
+          const response = await fetch("/api/auth", {method: "POST", body: JSON.stringify(values)});
+          console.log(`Got token: ${await response.json()}`);
+          actions.setSubmitting(false);
+        }} render={(props: FormikProps<LoginFormValues>) => (
+              <form onSubmit={props.handleSubmit}>
+                <Box><Field component={TextField} name="username" variant="outlined" margin="dense" label="Username" type="text" required /></Box>
+                <Box><Field component={TextField} name="password" variant="outlined" margin="dense" label="Password" type="password" required /></Box>
+                <Box style={{marginTop: "1em"}}><Button variant="outlined" color="secondary" type="submit">Sign in</Button></Box>
+              </form>
+        )} />
       );
     } else if (this.props.mode === LoginMode.REGISTER) {
       return (
         <React.Fragment>
-          <Box><TextField variant="outlined" margin="dense" label="Username" required /></Box>
-          <Box><TextField variant="outlined" margin="dense" label="Email" required type="email" /></Box>
-          <Box><TextField variant="outlined" margin="dense" label="Password" type="password" required /></Box>
-          <Box><TextField variant="outlined" margin="dense" label="Confirm Password" type="password" required /></Box>
+          <Box><MuiTextField variant="outlined" margin="dense" label="Username" required /></Box>
+          <Box><MuiTextField variant="outlined" margin="dense" label="Email" required type="email" /></Box>
+          <Box><MuiTextField variant="outlined" margin="dense" label="Password" type="password" required /></Box>
+          <Box><MuiTextField variant="outlined" margin="dense" label="Confirm Password" type="password" required /></Box>
           <FormControlLabel control={
             <Checkbox checked={true} color="secondary" />
           } label={
@@ -66,10 +90,6 @@ export default class Login extends React.Component<{}, {mode: LoginMode}> {
       <ThemeProvider theme={theme => createMuiTheme({...theme, palette: DarkPalette as PaletteOptions})}>
         <div style={backgroundStyles}>
           <img alt="Achatdemy Logo" src={logo} />
-          <Tabs value={this.state.mode} onChange={(event, newValue) => {this.setState({...this.state, mode: newValue})}}>
-            <Tab label="Login" value={LoginMode.LOGIN} />
-            <Tab label="Register" value={LoginMode.REGISTER} />
-          </Tabs>
           <LoginForm mode={this.state.mode} />
         </div>
       </ThemeProvider>
