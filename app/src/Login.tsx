@@ -1,7 +1,7 @@
 import React from 'react';
 import { MainPalette, DarkPalette } from './palette';
 import { ThemeProvider } from '@material-ui/styles';
-import { Formik, Field, Form, FormikProps, FormikActions } from 'formik';
+import { Formik, Field, FormikProps, FormikActions } from 'formik';
 import { TextField } from 'formik-material-ui';
 import {
   Box,
@@ -9,8 +9,6 @@ import {
   Checkbox,
   createMuiTheme,
   FormControlLabel,
-  Tab,
-  Tabs,
   TextField as MuiTextField
 } from '@material-ui/core';
 import logo from './logo.svg';
@@ -22,6 +20,13 @@ const backgroundStyles = {
   width: "100%",
   height: "100%",
   color: "white"
+};
+
+const center = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)"
 };
 
 enum LoginMode {
@@ -38,8 +43,8 @@ class LoginForm extends React.Component<{mode: LoginMode}, {}> {
   render() {
     if (this.props.mode === LoginMode.LOGIN) {
       return (
-        <Formik initialValues={{username: "s", password: ""}} validate={(values: LoginFormValues) => {
-          let errors = {};
+        <Formik initialValues={{username: "", password: ""}} validate={(values: LoginFormValues) => {
+          let errors: any = {};
           if (!values.username || values.username.length < 1) {
             errors.username = "Required."
           }
@@ -48,18 +53,30 @@ class LoginForm extends React.Component<{mode: LoginMode}, {}> {
           }
           return errors;
         }} onSubmit={async (values: LoginFormValues, actions: FormikActions<LoginFormValues>) => {
-          // TODO: Move elsewhere
-          console.log(values);
-          const response = await fetch("/api/auth", {method: "POST", body: JSON.stringify(values)});
-          console.log(`Got token: ${await response.json()}`);
-          actions.setSubmitting(false);
-        }} render={(props: FormikProps<LoginFormValues>) => (
+          try {
+            const response = await fetch("/api/auth", {
+              method: "POST",
+              body: JSON.stringify(values),
+              headers: {"Content-Type": "application/json"}
+            });
+            const result = await response.json();
+            if (result.error) {
+              actions.setErrors({password: result.error});
+              actions.setSubmitting(false);
+            } else {
+              actions.setErrors({});
+            }
+          } catch (e) {
+            actions.setErrors({password: "Error signing in. Please try again."});
+            actions.setSubmitting(false);
+          }
+        }} render={(props: FormikProps<LoginFormValues>) => { return (
               <form onSubmit={props.handleSubmit}>
                 <Box><Field component={TextField} name="username" variant="outlined" margin="dense" label="Username" type="text" required /></Box>
                 <Box><Field component={TextField} name="password" variant="outlined" margin="dense" label="Password" type="password" required /></Box>
-                <Box style={{marginTop: "1em"}}><Button variant="outlined" color="secondary" type="submit">Sign in</Button></Box>
+                <Box style={{marginTop: "1em"}}><Button disabled={props.isSubmitting} variant="outlined" color="secondary" type="submit" fullWidth>Sign in</Button></Box>
               </form>
-        )} />
+        )}} />
       );
     } else if (this.props.mode === LoginMode.REGISTER) {
       return (
@@ -89,8 +106,10 @@ export default class Login extends React.Component<{}, {mode: LoginMode}> {
     return (
       <ThemeProvider theme={theme => createMuiTheme({...theme, palette: DarkPalette as PaletteOptions})}>
         <div style={backgroundStyles}>
-          <img alt="Achatdemy Logo" src={logo} />
-          <LoginForm mode={this.state.mode} />
+          <div style={{...center, display: "flex", justifyContent: "center", alignItems: "center", flexDirection: "column"}}>
+            <img alt="Achatdemy Logo" src={logo} style={{marginBottom: "1em"}} />
+            <LoginForm mode={this.state.mode} />
+          </div>
         </div>
       </ThemeProvider>
     );
