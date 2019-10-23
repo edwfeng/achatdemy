@@ -6,9 +6,9 @@ defmodule Achatdemy.UsersTest do
   describe "users" do
     alias Achatdemy.Users.User
 
-    @valid_attrs %{email: "some email", password_hash: "some password_hash", username: "some username"}
-    @update_attrs %{email: "some updated email", password_hash: "some updated password_hash", username: "some updated username"}
-    @invalid_attrs %{email: nil, password_hash: nil, username: nil}
+    @valid_attrs %{email: "some email", password: "some password", username: "some username"}
+    @update_attrs %{email: "some updated email", password: "some updated password", username: "some updated username"}
+    @invalid_attrs %{email: nil, password: nil, username: nil}
 
     def user_fixture(attrs \\ %{}) do
       {:ok, user} =
@@ -32,7 +32,7 @@ defmodule Achatdemy.UsersTest do
     test "create_user/1 with valid data creates a user" do
       assert {:ok, %User{} = user} = Users.create_user(@valid_attrs)
       assert user.email == "some email"
-      assert user.password_hash == "some password_hash"
+      assert user.password == "some password"
       assert user.username == "some username"
     end
 
@@ -44,7 +44,7 @@ defmodule Achatdemy.UsersTest do
       user = user_fixture()
       assert {:ok, %User{} = user} = Users.update_user(user, @update_attrs)
       assert user.email == "some updated email"
-      assert user.password_hash == "some updated password_hash"
+      assert user.password == "some updated password"
       assert user.username == "some updated username"
     end
 

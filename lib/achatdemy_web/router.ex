@@ -14,14 +14,16 @@ defmodule AchatdemyWeb.Router do
   end
 
   scope "/api" do
-    resources "/auth", AchatdemyWeb.UserController
+    pipe_through :api
 
-    forward "/", Absinthe.Plug,
-      schema: AchatdemyWeb.Schema
+    resources "/auth", AchatdemyWeb.UserController
 
     forward "/graphiql", Absinthe.Plug.GraphiQL,
       schema: AchatdemyWeb.Schema,
       interface: :simple
+
+    forward "/", Absinthe.Plug,
+      schema: AchatdemyWeb.Schema
   end
 
   scope "/", AchatdemyWeb do

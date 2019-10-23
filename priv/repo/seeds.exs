@@ -21,13 +21,13 @@ alias Achatdemy.Repo
 
 user1 = %User{
   username: "Anthony",
-  password_hash: "pass1",
+  password: "pass1",
   email: "anthony@example.com"
 } |> Repo.insert!
 
 user2 = %User{
   username: "Jeremy",
-  password_hash: "pass2",
+  password: "pass2",
   email: "jeremy@example.com"
 } |> Repo.insert!
 

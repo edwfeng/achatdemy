@@ -13,7 +13,7 @@ defmodule AchatdemyWeb.UserView do
   def render("user.json", %{user: user}) do
     %{id: user.id,
       email: user.email,
-      password_hash: user.password_hash,
+      password: user.password,
       username: user.username}
   end
 end

@@ -6,15 +6,15 @@ defmodule AchatdemyWeb.UserControllerTest do
 
   @create_attrs %{
     email: "some email",
-    password_hash: "some password_hash",
+    password: "some password",
     username: "some username"
   }
   @update_attrs %{
     email: "some updated email",
-    password_hash: "some updated password_hash",
+    password: "some updated password",
     username: "some updated username"
   }
-  @invalid_attrs %{email: nil, password_hash: nil, username: nil}
+  @invalid_attrs %{email: nil, password: nil, username: nil}
 
   def fixture(:user) do
     {:ok, user} = Users.create_user(@create_attrs)
@@ -42,7 +42,7 @@ defmodule AchatdemyWeb.UserControllerTest do
       assert %{
                "id" => id,
                "email" => "some email",
-               "password_hash" => "some password_hash",
+               "password" => "some password",
                "username" => "some username"
              } = json_response(conn, 200)["data"]
     end
@@ -65,7 +65,7 @@ defmodule AchatdemyWeb.UserControllerTest do
       assert %{
                "id" => id,
                "email" => "some updated email",
-               "password_hash" => "some updated password_hash",
+               "password" => "some updated password",
                "username" => "some updated username"
              } = json_response(conn, 200)["data"]
     end
