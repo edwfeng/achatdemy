@@ -46,12 +46,9 @@ defmodule Achatdemy.Users do
       %{password: ^password}
         ->
           Achatdemy.Guardian.encode_and_sign(user)
-      nil
-        ->
-          {:error, "User does not exist."}
       _
         ->
-          {:error, "Password does not match."}
+          {:error, "User and password does not match."}
     end
   end
 
