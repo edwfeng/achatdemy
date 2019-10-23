@@ -5,8 +5,8 @@ defmodule AchatdemyWeb.UserController do
 
   action_fallback AchatdemyWeb.FallbackController
 
-  def create(conn, %{"user" => user_params}) do
-    with params <- Users.user_login(user_params) do
+  def create(conn, %{"username" => username, "password" => password}) do
+    with params <- Users.user_login(username, password) do
       render(conn, "login.json", params: params)
     end
   end

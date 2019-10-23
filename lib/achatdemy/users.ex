@@ -37,12 +37,11 @@ defmodule Achatdemy.Users do
   """
   def get_user!(id), do: Repo.get!(User, id)
 
-  def user_login(params) do
+  def user_login(username, password) do
     user = User
-           |> where(username: ^params["username"])
+           |> where(username: ^username)
            |> Repo.one
 
-    password = params["password"]
     case user do
       %{password: ^password}
         ->
