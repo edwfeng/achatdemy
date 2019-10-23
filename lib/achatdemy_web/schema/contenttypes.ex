@@ -8,6 +8,8 @@ defmodule AchatdemyWeb.Schema.ContentTypes do
     field :username, :string
     field :inserted_at, :naive_datetime
     field :updated_at, :naive_datetime
+    field :perms, list_of(:perm)
+    field :chats, list_of(:chat)
   end
 
   object :comm do
@@ -33,6 +35,8 @@ defmodule AchatdemyWeb.Schema.ContentTypes do
     field :comm_id, :id
     field :inserted_at, :naive_datetime
     field :updated_at, :naive_datetime
+    field :messages, list_of(:message)
+    field :widgets, list_of(:widget)
   end
 
   object :message do
@@ -42,6 +46,7 @@ defmodule AchatdemyWeb.Schema.ContentTypes do
     field :user_id, :id
     field :inserted_at, :naive_datetime
     field :updated_at, :naive_datetime
+    field :files, list_of(:file)
   end
 
   object :widget do
@@ -59,5 +64,6 @@ defmodule AchatdemyWeb.Schema.ContentTypes do
     field :path, :string
     field :inserted_at, :naive_datetime
     field :updated_at, :naive_datetime
+    field :messages, list_of(:message)
   end
 end
