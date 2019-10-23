@@ -37,6 +37,25 @@ defmodule Achatdemy.Users do
   """
   def get_user!(id), do: Repo.get!(User, id)
 
+  def user_login(params) do
+    user = User
+           |> where(username: ^params["username"])
+           |> Repo.one
+
+    password = params["password"]
+    case user do
+      %{password: ^password}
+        ->
+          {:ok, "token"}
+      nil
+        ->
+          {:error, "User does not exist."}
+      _
+        ->
+          {:error, "Password does not match."}
+    end
+  end
+
   @doc """
   Creates a user.
 

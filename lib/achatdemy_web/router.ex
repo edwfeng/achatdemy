@@ -16,7 +16,7 @@ defmodule AchatdemyWeb.Router do
   scope "/api" do
     pipe_through :api
 
-    resources "/auth", AchatdemyWeb.UserController
+    resources "/auth", AchatdemyWeb.UserController, only: [:create]
 
     forward "/graphiql", Absinthe.Plug.GraphiQL,
       schema: AchatdemyWeb.Schema,
