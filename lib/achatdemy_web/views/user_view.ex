@@ -4,7 +4,7 @@ defmodule AchatdemyWeb.UserView do
 
   def render("login.json", %{params: params}) do
     case params do
-      {:ok, token} -> %{token: token}
+      {:ok, token, claims} -> %{token: token, claims: claims}
       {_, error} -> %{error: error}
     end
   end

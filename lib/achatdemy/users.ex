@@ -46,7 +46,7 @@ defmodule Achatdemy.Users do
     case user do
       %{password: ^password}
         ->
-          {:ok, "token"}
+          Achatdemy.Guardian.encode_and_sign(user)
       nil
         ->
           {:error, "User does not exist."}
