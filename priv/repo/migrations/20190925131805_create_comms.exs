@@ -9,5 +9,6 @@ defmodule Achatdemy.Repo.Migrations.CreateComms do
       timestamps()
     end
 
+    create unique_index(:comms, :name)
   end
 end
