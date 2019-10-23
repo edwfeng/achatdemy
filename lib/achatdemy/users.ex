@@ -37,6 +37,24 @@ defmodule Achatdemy.Users do
   """
   def get_user!(id), do: Repo.get!(User, id)
 
+  def user_login(username, password) do
+    user = User
+           |> where(username: ^username)
+           |> Repo.one
+
+    case user do
+      %{password: ^password}
+        ->
+          Achatdemy.Guardian.encode_and_sign(user)
+      nil
+        ->
+          {:error, "User does not exist."}
+      _
+        ->
+          {:error, "Password does not match."}
+    end
+  end
+
   @doc """
   Creates a user.
 
@@ -133,6 +151,12 @@ defmodule Achatdemy.Users do
   """
   def get_perm!(id), do: Repo.get!(Perm, id)
 
+  def list_user_perms_user(uid) do
+    Perm
+    |> where(user_id: ^uid)
+    |> Repo.all()
+  end
+
   @doc """
   Creates a perm.
 
@@ -196,5 +220,21 @@ defmodule Achatdemy.Users do
   """
   def change_perm(%Perm{} = perm) do
     Perm.changeset(perm, %{})
+  end
+
+  def link_user_comm(user_id, comm_id, attrs) when is_map(attrs) do
+    %Perm{
+      user_id: user_id,
+      comm_id: comm_id
+    }
+    |> Perm.changeset(attrs)
+    |> Repo.insert!
+  end
+
+  def unlink_user_comm(user_id, comm_id) do
+    Perm
+    |> where(user_id: ^user_id)
+    |> where(comm_id: ^comm_id)
+    |> Repo.delete_all
   end
 end
