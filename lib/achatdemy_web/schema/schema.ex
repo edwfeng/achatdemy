@@ -28,9 +28,10 @@ defmodule AchatdemyWeb.Schema do
       resolve &AchatdemyWeb.Resolvers.Comms.list_comm/3
     end
 
-    @desc "Get a list of perms by user id"
+    @desc "Get a list of perms"
     field :perms, list_of(:perm) do
       arg :user_id, :id
+      arg :comm_id, :id
       resolve &AchatdemyWeb.Resolvers.Users.list_perms/3
     end
 
