@@ -37,6 +37,18 @@ defmodule Achatdemy.Users do
   """
   def get_user!(id), do: Repo.get!(User, id)
 
+  def get_user_name!(username) do
+    User
+    |> where(username: ^username)
+    |> Repo.one
+  end
+
+  def get_user_email!(email) do
+    User
+    |> where(email: ^email)
+    |> Repo.one
+  end
+
   def user_login(username, password) do
     user = User
            |> where(username: ^username)

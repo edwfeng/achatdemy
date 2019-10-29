@@ -9,6 +9,14 @@ defmodule AchatdemyWeb.Resolvers.Users do
     {:ok, Users.get_user!(id)}
   end
 
+  def list_user(_, %{username: username}, _) do
+    {:ok, Users.get_user_name!(username)}
+  end
+
+  def list_user(_, %{email: email}, _) do
+    {:ok, Users.get_user_email!(email)}
+  end
+
   def list_perms(_, %{user_id: user_id}, _) do
     {:ok, Users.list_user_perms_user(user_id)}
   end

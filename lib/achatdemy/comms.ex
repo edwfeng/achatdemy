@@ -37,6 +37,12 @@ defmodule Achatdemy.Comms do
   """
   def get_comm!(id), do: Repo.get!(Comm, id)
 
+  def get_comm_name!(name) do
+    Comm
+    |> where(name: ^name)
+    |> Repo.one
+  end
+
   @doc """
   Creates a comm.
 
