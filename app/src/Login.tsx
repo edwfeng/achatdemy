@@ -107,7 +107,7 @@ export default class Login extends React.Component<{}, {mode: LoginMode}> {
     return (
       <ThemeProvider theme={theme => createMuiTheme({...theme, palette: DarkPalette as PaletteOptions})}>
         <div style={backgroundStyles}>
-          <div style={{...center, display: "flex", justifyContent: "center", alignItems: "center", flexDirection: "column"}}>
+          <div style={{...center, display: "flex", justifyContent: "center", alignItems: "center", flexDirection: "column"} as any}>
             <img alt="Achatdemy Logo" src={logo} style={{marginBottom: "1em"}} />
             <LoginForm mode={this.state.mode} />
           </div>
