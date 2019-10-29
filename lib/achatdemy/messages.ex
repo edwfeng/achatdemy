@@ -224,4 +224,20 @@ defmodule Achatdemy.Messages do
     |> where(file_id: ^file_id)
     |> Repo.delete_all
   end
+
+  def get_files_by_message(_model, ids) do
+    Achatdemy.Messages.Message
+    |> where([post], post.id in ^ids)
+    |> preload(:files)
+    |> Repo.all()
+    |> Map.new(&{&1.id, &1.files})
+  end
+
+  def get_messages_by_file(_model, ids) do
+    Achatdemy.Messages.File
+    |> where([file], file.id in ^ids)
+    |> preload(:messages)
+    |> Repo.all()
+    |> Map.new(&{&1.id, &1.messages})
+  end
 end

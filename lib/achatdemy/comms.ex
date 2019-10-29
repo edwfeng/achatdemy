@@ -107,4 +107,18 @@ defmodule Achatdemy.Comms do
   def change_comm(%Comm{} = comm) do
     Comm.changeset(comm, %{})
   end
+
+  def get_perms_by_comm(_model, ids) do
+    Achatdemy.Users.Perm
+    |> where([perm], perm.comm_id in ^ids)
+    |> Repo.all()
+    |> Enum.group_by(&(&1.comm_id))
+  end
+
+  def get_chats_by_comm(_model, ids) do
+    Achatdemy.Chats.Chat
+    |> where([chat], chat.comm_id in ^ids)
+    |> Repo.all()
+    |> Enum.group_by(&(&1.comm_id))
+  end
 end
