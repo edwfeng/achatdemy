@@ -250,21 +250,21 @@ defmodule Achatdemy.Users do
     |> Repo.delete_all
   end
 
-  def get_perms_by_user(_model, ids) do
+  def get_perms_by_users(_model, ids) do
     Achatdemy.Users.Perm
     |> where([perm], perm.user_id in ^ids)
     |> Repo.all()
     |> Enum.group_by(&(&1.user_id))
   end
 
-  def get_chats_by_user(_model, ids) do
+  def get_chats_by_users(_model, ids) do
     Achatdemy.Chats.Chat
     |> where([chat], chat.user_id in ^ids)
     |> Repo.all()
     |> Enum.group_by(&(&1.user_id))
   end
 
-  def get_messages_by_user(_model, ids) do
+  def get_messages_by_users(_model, ids) do
     Achatdemy.Messages.Message
     |> where([msg], msg.user_id in ^ids)
     |> Repo.all()

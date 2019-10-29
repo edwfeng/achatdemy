@@ -10,21 +10,21 @@ defmodule AchatdemyWeb.Schema.ContentTypes do
     field :updated_at, :naive_datetime
     field :perms, list_of(:perm) do
       resolve fn user, _, _ ->
-        batch({Achatdemy.Users, :get_perms_by_user}, user.id, fn batch_results ->
+        batch({Achatdemy.Users, :get_perms_by_users}, user.id, fn batch_results ->
           {:ok, Map.get(batch_results, user.id)}
         end)
       end
     end
     field :chats, list_of(:chat) do
       resolve fn user, _, _ ->
-        batch({Achatdemy.Users, :get_chats_by_user}, user.id, fn batch_results ->
+        batch({Achatdemy.Users, :get_chats_by_users}, user.id, fn batch_results ->
           {:ok, Map.get(batch_results, user.id)}
         end)
       end
     end
     field :messages, list_of(:message) do
       resolve fn user, _, _ ->
-        batch({Achatdemy.Users, :get_messages_by_user}, user.id, fn batch_results ->
+        batch({Achatdemy.Users, :get_messages_by_users}, user.id, fn batch_results ->
           {:ok, Map.get(batch_results, user.id)}
         end)
       end
@@ -38,14 +38,14 @@ defmodule AchatdemyWeb.Schema.ContentTypes do
     field :updated_at, :naive_datetime
     field :perms, list_of(:perm) do
       resolve fn comm, _, _ ->
-        batch({Achatdemy.Comms, :get_perms_by_comm}, comm.id, fn batch_results ->
+        batch({Achatdemy.Comms, :get_perms_by_comms}, comm.id, fn batch_results ->
           {:ok, Map.get(batch_results, comm.id)}
         end)
       end
     end
     field :chats, list_of(:chat) do
       resolve fn comm, _, _ ->
-        batch({Achatdemy.Comms, :get_chats_by_comm}, comm.id, fn batch_results ->
+        batch({Achatdemy.Comms, :get_chats_by_comms}, comm.id, fn batch_results ->
           {:ok, Map.get(batch_results, comm.id)}
         end)
       end
@@ -70,14 +70,14 @@ defmodule AchatdemyWeb.Schema.ContentTypes do
     field :updated_at, :naive_datetime
     field :messages, list_of(:message) do
       resolve fn chat, _, _ ->
-        batch({Achatdemy.Chats, :get_messages_by_chat}, chat.id, fn batch_results ->
+        batch({Achatdemy.Chats, :get_messages_by_chats}, chat.id, fn batch_results ->
           {:ok, Map.get(batch_results, chat.id)}
         end)
       end
     end
     field :widgets, list_of(:widget) do
       resolve fn chat, _, _ ->
-        batch({Achatdemy.Chats, :get_widgets_by_chat}, chat.id, fn batch_results ->
+        batch({Achatdemy.Chats, :get_widgets_by_chats}, chat.id, fn batch_results ->
           {:ok, Map.get(batch_results, chat.id)}
         end)
       end
@@ -93,7 +93,7 @@ defmodule AchatdemyWeb.Schema.ContentTypes do
     field :updated_at, :naive_datetime
     field :files, list_of(:file) do
       resolve fn message, _, _ ->
-        batch({Achatdemy.Messages, :get_files_by_message}, message.id, fn batch_results ->
+        batch({Achatdemy.Messages, :get_files_by_messages}, message.id, fn batch_results ->
           {:ok, Map.get(batch_results, message.id)}
         end)
       end
@@ -117,7 +117,7 @@ defmodule AchatdemyWeb.Schema.ContentTypes do
     field :updated_at, :naive_datetime
     field :messages, list_of(:message) do
       resolve fn file, _, _ ->
-        batch({Achatdemy.Messages, :get_messages_by_file}, file.id, fn batch_results ->
+        batch({Achatdemy.Messages, :get_messages_by_files}, file.id, fn batch_results ->
           {:ok, Map.get(batch_results, file.id)}
         end)
       end

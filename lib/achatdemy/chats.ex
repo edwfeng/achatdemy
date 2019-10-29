@@ -222,14 +222,14 @@ defmodule Achatdemy.Chats do
     Widget.changeset(widget, %{})
   end
 
-  def get_messages_by_chat(_model, ids) do
+  def get_messages_by_chats(_model, ids) do
     Achatdemy.Messages.Message
     |> where([msg], msg.chat_id in ^ids)
     |> Repo.all()
     |> Enum.group_by(&(&1.chat_id))
   end
 
-  def get_widgets_by_chat(_model, ids) do
+  def get_widgets_by_chats(_model, ids) do
     Achatdemy.Chats.Widget
     |> where([widget], widget.chat_id in ^ids)
     |> Repo.all()

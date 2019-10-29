@@ -225,7 +225,7 @@ defmodule Achatdemy.Messages do
     |> Repo.delete_all
   end
 
-  def get_files_by_message(_model, ids) do
+  def get_files_by_messages(_model, ids) do
     Achatdemy.Messages.Message
     |> where([post], post.id in ^ids)
     |> preload(:files)
@@ -233,7 +233,7 @@ defmodule Achatdemy.Messages do
     |> Map.new(&{&1.id, &1.files})
   end
 
-  def get_messages_by_file(_model, ids) do
+  def get_messages_by_files(_model, ids) do
     Achatdemy.Messages.File
     |> where([file], file.id in ^ids)
     |> preload(:messages)
