@@ -54,7 +54,21 @@ defmodule AchatdemyWeb.Schema.ContentTypes do
 
   object :perm do
     field :user_id, non_null(:id)
+    field :user, :user do
+      resolve fn perm, _, _ ->
+        batch({Achatdemy.Users, :get_user_by_perms}, perm.user_id, fn batch_results ->
+          {:ok, Map.get(batch_results, perm.user_id)}
+        end)
+      end
+    end
     field :comm_id, non_null(:id)
+    field :comm, :comm do
+      resolve fn perm, _, _ ->
+        batch({Achatdemy.Users, :get_comm_by_perms}, perm.comm_id, fn batch_results ->
+          {:ok, Map.get(batch_results, perm.comm_id)}
+        end)
+      end
+    end
     field :chmod, :integer
     field :inserted_at, :naive_datetime
     field :updated_at, :naive_datetime
@@ -65,7 +79,21 @@ defmodule AchatdemyWeb.Schema.ContentTypes do
     field :title, :string
     field :type, :integer
     field :user_id, :id
+    field :user, :user do
+      resolve fn chat, _, _ ->
+        batch({Achatdemy.Chats, :get_user_by_chats}, chat.user_id, fn batch_results ->
+          {:ok, Map.get(batch_results, chat.user_id)}
+        end)
+      end
+    end
     field :comm_id, :id
+    field :comm, :comm do
+      resolve fn chat, _, _ ->
+        batch({Achatdemy.Chats, :get_comm_by_chats}, chat.comm_id, fn batch_results ->
+          {:ok, Map.get(batch_results, chat.comm_id)}
+        end)
+      end
+    end
     field :inserted_at, :naive_datetime
     field :updated_at, :naive_datetime
     field :messages, list_of(:message) do
@@ -88,7 +116,21 @@ defmodule AchatdemyWeb.Schema.ContentTypes do
     field :id, non_null(:id)
     field :msg, :string
     field :chat_id, :id
+    field :chat, :chat do
+      resolve fn message, _, _ ->
+        batch({Achatdemy.Messages, :get_chat_by_messages}, message.chat_id, fn batch_results ->
+          {:ok, Map.get(batch_results, message.chat_id)}
+        end)
+      end
+    end
     field :user_id, :id
+    field :user, :user do
+      resolve fn message, _, _ ->
+        batch({Achatdemy.Messages, :get_user_by_messages}, message.user_id, fn batch_results ->
+          {:ok, Map.get(batch_results, message.user_id)}
+        end)
+      end
+    end
     field :inserted_at, :naive_datetime
     field :updated_at, :naive_datetime
     field :files, list_of(:file) do
@@ -105,6 +147,13 @@ defmodule AchatdemyWeb.Schema.ContentTypes do
     field :desc, :string
     field :uri, :string
     field :chat_id, :id
+    field :chat, :chat do
+      resolve fn widget, _, _ ->
+        batch({Achatdemy.Chats, :get_chat_by_widgets}, widget.chat_id, fn batch_results ->
+          {:ok, Map.get(batch_results, widget.chat_id)}
+        end)
+      end
+    end
     field :inserted_at, :naive_datetime
     field :updated_at, :naive_datetime
   end

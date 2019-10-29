@@ -235,4 +235,25 @@ defmodule Achatdemy.Chats do
     |> Repo.all()
     |> Enum.group_by(&(&1.chat_id))
   end
+
+  def get_user_by_chats(_model, ids) do
+    Achatdemy.Users.User
+    |> where([user], user.id in ^ids)
+    |> Repo.all()
+    |> Map.new(&{&1.id, &1})
+  end
+
+  def get_comm_by_chats(_model, ids) do
+    Achatdemy.Comms.Comm
+    |> where([comm], comm.id in ^ids)
+    |> Repo.all()
+    |> Map.new(&{&1.id, &1})
+  end
+
+  def get_chat_by_widgets(_model, ids) do
+    Achatdemy.Chats.Chat
+    |> where([chat], chat.id in ^ids)
+    |> Repo.all()
+    |> Map.new(&{&1.id, &1})
+  end
 end

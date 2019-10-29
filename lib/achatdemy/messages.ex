@@ -240,4 +240,18 @@ defmodule Achatdemy.Messages do
     |> Repo.all()
     |> Map.new(&{&1.id, &1.messages})
   end
+
+  def get_chat_by_messages(_model, ids) do
+    Achatdemy.Chats.Chat
+    |> where([chat], chat.id in ^ids)
+    |> Repo.all()
+    |> Map.new(&{&1.id, &1})
+  end
+
+  def get_user_by_messages(_model, ids) do
+    Achatdemy.Users.User
+    |> where([user], user.id in ^ids)
+    |> Repo.all()
+    |> Map.new(&{&1.id, &1})
+  end
 end

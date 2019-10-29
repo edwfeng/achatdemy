@@ -276,4 +276,18 @@ defmodule Achatdemy.Users do
     |> Repo.all()
     |> Enum.group_by(&(&1.user_id))
   end
+
+  def get_user_by_perms(_model, ids) do
+    Achatdemy.Users.User
+    |> where([user], user.id in ^ids)
+    |> Repo.all()
+    |> Map.new(&{&1.id, &1})
+  end
+
+  def get_comm_by_perms(_model, ids) do
+    Achatdemy.Comms.Comm
+    |> where([comm], comm.id in ^ids)
+    |> Repo.all()
+    |> Map.new(&{&1.id, &1})
+  end
 end
