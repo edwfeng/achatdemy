@@ -33,5 +33,57 @@ defmodule AchatdemyWeb.Schema do
       arg :user_id, :id
       resolve &AchatdemyWeb.Resolvers.Users.list_perms/3
     end
+
+    @desc "Get a list of chats"
+    field :chats, list_of(:chat) do
+      arg :comm_id, :id
+      arg :user_id, :id
+      arg :type, :integer
+      resolve &AchatdemyWeb.Resolvers.Chats.list_chats/3
+    end
+
+    @desc "Get a chat"
+    field :chat, :chat do
+      arg :id, :id
+      resolve &AchatdemyWeb.Resolvers.Chats.list_chat/3
+    end
+
+    @desc "Get a list of messages"
+    field :messages, list_of(:message) do
+      arg :chat_id, :id
+      arg :user_id, :id
+      resolve &AchatdemyWeb.Resolvers.Messages.list_messages/3
+    end
+
+    @desc "Get a message"
+    field :message, :message do
+      arg :id, :id
+      resolve &AchatdemyWeb.Resolvers.Messages.list_message/3
+    end
+
+    @desc "Get a list of widgets"
+    field :widgets, list_of(:widget) do
+      arg :chat_id, :id
+      resolve &AchatdemyWeb.Resolvers.Chats.list_widgets/3
+    end
+
+    @desc "Get a widget"
+    field :widget, :widget do
+      arg :id, :id
+      resolve &AchatdemyWeb.Resolvers.Chats.list_widget/3
+    end
+
+    @desc "Get a list of files"
+    field :files, list_of(:file) do
+      # TODO: figure out how file management will work
+      # get by user?
+      resolve &AchatdemyWeb.Resolvers.Messages.list_files/3
+    end
+
+    @desc "Get a file"
+    field :file, :file do
+      arg :id, :id
+      resolve &AchatdemyWeb.Resolvers.Messages.list_file/3
+    end
   end
 end

@@ -37,6 +37,24 @@ defmodule Achatdemy.Chats do
   """
   def get_chat!(id), do: Repo.get!(Chat, id)
 
+  def get_chats_comm(comm_id) do
+    Chat
+    |> where(comm_id: ^comm_id)
+    |> Repo.all()
+  end
+
+  def get_chats_user(user_id) do
+    Chat
+    |> where(user_id: ^user_id)
+    |> Repo.all()
+  end
+
+  def get_chats_type(type) do
+    Chat
+    |> where(type: ^type)
+    |> Repo.all()
+  end
+
   @doc """
   Creates a chat.
 
@@ -132,6 +150,12 @@ defmodule Achatdemy.Chats do
 
   """
   def get_widget!(id), do: Repo.get!(Widget, id)
+
+  def get_widget_chat(chat_id) do
+    Widget
+    |> where(chat_id: ^chat_id)
+    |> Repo.all()
+  end
 
   @doc """
   Creates a widget.

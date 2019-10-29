@@ -37,6 +37,18 @@ defmodule Achatdemy.Messages do
   """
   def get_message!(id), do: Repo.get!(Message, id)
 
+  def get_messages_chat(chat_id) do
+    Message
+    |> where(chat_id: ^chat_id)
+    |> Repo.all()
+  end
+
+  def get_messages_user(user_id) do
+    Message
+    |> where(user_id: ^user_id)
+    |> Repo.all()
+  end
+
   @doc """
   Creates a message.
 
