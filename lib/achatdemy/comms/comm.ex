@@ -19,5 +19,6 @@ defmodule Achatdemy.Comms.Comm do
     comm
     |> cast(attrs, [:name])
     |> validate_required([:name])
+    |> unique_constraint(:name)
   end
 end

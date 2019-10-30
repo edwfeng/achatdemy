@@ -37,6 +37,18 @@ defmodule Achatdemy.Messages do
   """
   def get_message!(id), do: Repo.get!(Message, id)
 
+  def get_messages_chat(chat_id) do
+    Message
+    |> where(chat_id: ^chat_id)
+    |> Repo.all()
+  end
+
+  def get_messages_user(user_id) do
+    Message
+    |> where(user_id: ^user_id)
+    |> Repo.all()
+  end
+
   @doc """
   Creates a message.
 
@@ -211,5 +223,35 @@ defmodule Achatdemy.Messages do
     |> where(message_id: ^message_id)
     |> where(file_id: ^file_id)
     |> Repo.delete_all
+  end
+
+  def get_files_by_messages(_model, ids) do
+    Achatdemy.Messages.Message
+    |> where([post], post.id in ^ids)
+    |> preload(:files)
+    |> Repo.all()
+    |> Map.new(&{&1.id, &1.files})
+  end
+
+  def get_messages_by_files(_model, ids) do
+    Achatdemy.Messages.File
+    |> where([file], file.id in ^ids)
+    |> preload(:messages)
+    |> Repo.all()
+    |> Map.new(&{&1.id, &1.messages})
+  end
+
+  def get_chat_by_messages(_model, ids) do
+    Achatdemy.Chats.Chat
+    |> where([chat], chat.id in ^ids)
+    |> Repo.all()
+    |> Map.new(&{&1.id, &1})
+  end
+
+  def get_user_by_messages(_model, ids) do
+    Achatdemy.Users.User
+    |> where([user], user.id in ^ids)
+    |> Repo.all()
+    |> Map.new(&{&1.id, &1})
   end
 end

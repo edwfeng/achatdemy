@@ -37,6 +37,18 @@ defmodule Achatdemy.Users do
   """
   def get_user!(id), do: Repo.get!(User, id)
 
+  def get_user_name!(username) do
+    User
+    |> where(username: ^username)
+    |> Repo.one
+  end
+
+  def get_user_email!(email) do
+    User
+    |> where(email: ^email)
+    |> Repo.one
+  end
+
   def user_login(username, password) do
     user = User
            |> where(username: ^username)
@@ -154,6 +166,12 @@ defmodule Achatdemy.Users do
     |> Repo.all()
   end
 
+  def list_user_perms_comm(cid) do
+    Perm
+    |> where(comm_id: ^cid)
+    |> Repo.all()
+  end
+
   @doc """
   Creates a perm.
 
@@ -233,5 +251,40 @@ defmodule Achatdemy.Users do
     |> where(user_id: ^user_id)
     |> where(comm_id: ^comm_id)
     |> Repo.delete_all
+  end
+
+  def get_perms_by_users(_model, ids) do
+    Achatdemy.Users.Perm
+    |> where([perm], perm.user_id in ^ids)
+    |> Repo.all()
+    |> Enum.group_by(&(&1.user_id))
+  end
+
+  def get_chats_by_users(_model, ids) do
+    Achatdemy.Chats.Chat
+    |> where([chat], chat.user_id in ^ids)
+    |> Repo.all()
+    |> Enum.group_by(&(&1.user_id))
+  end
+
+  def get_messages_by_users(_model, ids) do
+    Achatdemy.Messages.Message
+    |> where([msg], msg.user_id in ^ids)
+    |> Repo.all()
+    |> Enum.group_by(&(&1.user_id))
+  end
+
+  def get_user_by_perms(_model, ids) do
+    Achatdemy.Users.User
+    |> where([user], user.id in ^ids)
+    |> Repo.all()
+    |> Map.new(&{&1.id, &1})
+  end
+
+  def get_comm_by_perms(_model, ids) do
+    Achatdemy.Comms.Comm
+    |> where([comm], comm.id in ^ids)
+    |> Repo.all()
+    |> Map.new(&{&1.id, &1})
   end
 end
