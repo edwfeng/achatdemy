@@ -1,5 +1,7 @@
 import {red} from "@material-ui/core/colors";
 
+export const lightBackground = "#ccd5f0";
+
 export const MainPalette = {
   primary: {
     light: "#383e67",
@@ -15,12 +17,8 @@ export const MainPalette = {
 };
 
 export const DarkPalette = {
-  primary: {main: "#383e67"},
-  secondary: {
-    light: "#ffe669",
-    main: "#F6B436",
-    dark: "#bf8500"
-  },
+  primary: {main: lightBackground},
+  secondary: MainPalette.secondary,
   error: red,
   type: "dark"
 };

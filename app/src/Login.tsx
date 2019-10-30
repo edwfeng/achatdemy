@@ -80,7 +80,7 @@ class LoginForm extends React.Component<{mode: LoginMode, onSuccess: () => void}
                     console.error(e);
                 }
             } catch (e) {
-                actions.setErrors({password: "Error signing in. Please try again."});
+                actions.setErrors({password: "An internal error occurred."});
                 actions.setSubmitting(false);
             }
             // TODO: Ensure username and password field have same width even when the error text is long.
@@ -88,7 +88,7 @@ class LoginForm extends React.Component<{mode: LoginMode, onSuccess: () => void}
             <form onSubmit={props.handleSubmit}>
                 <Box><Field component={TextField} name="username" variant="outlined" margin="dense" label="Username" type="text" required fullWidth /></Box>
                 <Box><Field component={TextField} name="password" variant="outlined" margin="dense" label="Password" type="password" required fullWidth /></Box>
-                <Box style={{marginTop: "1em"}}><Button disabled={props.isSubmitting} variant="outlined" color="secondary" type="submit" fullWidth>Sign in</Button></Box>
+                <Box style={{marginTop: "1em"}}><Button disabled={props.isSubmitting || !props.isValid} variant="outlined" color="secondary" type="submit" fullWidth>Sign in</Button></Box>
             </form>
         )}} />)}</AuthContext.Consumer>
       );

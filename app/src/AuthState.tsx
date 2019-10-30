@@ -5,7 +5,19 @@ import {loginPath} from "./Constants";
 import {Location} from 'history';
 
 export class AuthState {
-    token: String | undefined;
+    constructor(private localStorageToken: string) {}
+
+    _token: string | undefined = localStorage.getItem(this.localStorageToken) || undefined;
+
+    get token() { return this._token; }
+    set token(token: string | undefined) {
+        this._token = token;
+        if (token) {
+            localStorage.setItem(this.localStorageToken, token);
+        } else {
+            localStorage.removeItem(this.localStorageToken);
+        }
+    }
 
     invalidate() {
         this.token = undefined;
@@ -17,7 +29,7 @@ export class AuthState {
 }
 
 export default AuthState;
-export const AuthContext = createContext(new AuthState());
+export const AuthContext = createContext(new AuthState("achatdemy_token"));
 
 function LoginRedirect({location}: {location: Location}) {
     return <Redirect to={{pathname: loginPath, state: {from: location}}} />
