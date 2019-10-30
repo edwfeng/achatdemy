@@ -76,8 +76,6 @@ defmodule AchatdemyWeb.Schema do
 
     @desc "Get a list of files"
     field :files, list_of(:file) do
-      # TODO: figure out how file management will work
-      # get by user?
       resolve &AchatdemyWeb.Resolvers.Messages.list_files/3
     end
 
