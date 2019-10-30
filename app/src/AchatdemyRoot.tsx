@@ -5,6 +5,8 @@ import { ThemeProvider } from '@material-ui/styles';
 import {Switch, Route, BrowserRouter} from 'react-router-dom';
 import Login from './Login';
 import {PrivateRoute} from "./AuthState";
+import Shell from "./Shell";
+import {loginPath} from "./Constants";
 
 class AchatdemyRoot extends React.Component {
   theme = createMuiTheme({
@@ -31,10 +33,8 @@ class AchatdemyRoot extends React.Component {
         <ThemeProvider theme={this.theme}>
           <CssBaseline />
           <Switch>
-              <Route path="/login" exact>
-                  <Login />
-              </Route>
-              <PrivateRoute path="/test">You're in!</PrivateRoute>
+              <Route path={loginPath} exact component={Login} />
+              <PrivateRoute path="/" component={Shell} />
           </Switch>
         </ThemeProvider>
       </BrowserRouter>
