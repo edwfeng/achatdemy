@@ -85,4 +85,20 @@ defmodule AchatdemyWeb.Schema do
       resolve &AchatdemyWeb.Resolvers.Messages.list_file/3
     end
   end
+
+
+  mutation do
+    field :create_comm, :comm do
+      arg :name, non_null(:string)
+
+      resolve &AchatdemyWeb.Resolvers.Comms.create_comm/3
+    end
+
+    field :edit_comm, :comm do
+      arg :id, :id
+      arg :name, :string
+
+      resolve &AchatdemyWeb.Resolvers.Comms.edit_comm/3
+    end
+  end
 end
