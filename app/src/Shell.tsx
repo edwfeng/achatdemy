@@ -2,6 +2,7 @@ import {RouteProps, useHistory} from "react-router";
 import React from "react";
 import {
     IconButton,
+    Button,
     createMuiTheme,
     Drawer,
     makeStyles,
@@ -11,11 +12,11 @@ import {
 } from "@material-ui/core";
 import {AuthContext} from "./AuthState";
 import {loginPath} from "./Constants";
-import {DarkPalette} from "./palette";
+import {DarkPalette, gradient} from "./palette";
 import {PaletteOptions} from "@material-ui/core/styles/createPalette";
 import {ThemeProvider} from "@material-ui/styles";
 import logo from "./logo.svg";
-import {AllInbox as AllIcon, Settings as SettingsIcon, Add as AddIcon, GroupAdd as GroupAddIcon} from '@material-ui/icons';
+import {AllInbox as AllIcon, Settings as SettingsIcon, Add as AddIcon, Close as CloseIcon} from '@material-ui/icons';
 import {Field, Formik, FormikActions, FormikProps} from "formik";
 import {TextField} from "formik-material-ui";
 
@@ -32,6 +33,7 @@ const useStyles = makeStyles(theme => ({
     paper: {
         width: drawerWidth,
         backgroundColor: theme.palette.primary.main,
+        backgroundImage: gradient,
         borderRight: "none",
         color: "white"
     },
@@ -40,13 +42,27 @@ const useStyles = makeStyles(theme => ({
         color: "black",
         "&:hover": {
             backgroundColor: theme.palette.secondary.dark
+        },
+        "&:focus": {
+            backgroundColor: theme.palette.secondary.dark
         }
     },
     newCommDialog: {
         backgroundColor: theme.palette.primary.main,
+        backgroundImage: gradient,
         color: "white",
         width: "100%",
         maxWidth: "500px"
+    },
+    closeButton: {
+        position: "absolute",
+        right: theme.spacing(1),
+        top: theme.spacing(1)
+    },
+    center: {
+        marginLeft: "auto",
+        marginRight: "auto",
+        textAlign: "center"
     }
 }));
 
@@ -84,11 +100,11 @@ export default function Shell({children}: RouteProps) {
                             <Divider />
                             <ListItem button className={classes.selectedComm}><AllIcon style={{margin: "0.2em"}} /> All</ListItem>
                             <Divider />
-                            <ListItem dense button>Comm 1</ListItem>
-                            <ListItem dense button>Comm 2</ListItem>
-                            <ListItem dense button>Comm 3</ListItem>
-                            <ListItem dense button>Comm 4</ListItem>
-                            <ListItem dense button>Comm 5</ListItem>
+                            <ListItem dense button>Achatdemy Team</ListItem>
+                            <ListItem dense button>ATCS</ListItem>
+                            <ListItem dense button>Class of 2022</ListItem>
+                            <ListItem dense button>BCA</ListItem>
+                            <ListItem dense button>Comp Sci Club</ListItem>
                             <Divider />
                             <ListItem button onClick={() => setNewCommOpen(true)}><AddIcon style={{margin: "0.2em"}} /> New</ListItem>
                         </List>
@@ -97,8 +113,13 @@ export default function Shell({children}: RouteProps) {
             {children}
             <ThemeProvider theme={theme => createMuiTheme({...theme, palette: DarkPalette as PaletteOptions})}>
                 <Dialog open={newCommOpen} onClose={() => setNewCommOpen(false)} classes={{paper: classes.newCommDialog}}>
-                    <DialogTitle style={{textAlign: "center"}}>Create a community</DialogTitle>
+                    <DialogTitle style={{textAlign: "center"}}>Create a community <IconButton className={classes.closeButton} onClick={() => setNewCommOpen(false)}>
+                        <CloseIcon />
+                    </IconButton></DialogTitle>
                     <DialogContent style={{width: "100%"}}>
+                        <p className={classes.center} style={{marginTop: "5em", marginBottom: "1em"}}>
+                            Create a community to ask questions about a particular topic.
+                        </p>
                         <Formik initialValues={{name: ""}} validate={
                             ({name}: {name: string}) => ((!name || name.length < 1) ? {name: "Required."} : {})
                         } onSubmit={({name}: {name: string}, actions: FormikActions<{name: string}>) => {
@@ -111,7 +132,12 @@ export default function Shell({children}: RouteProps) {
                             }
                         }} render={(props: FormikProps<{name: string}>) => { return (
                             <form onSubmit={props.handleSubmit}>
-                                <Box><Field component={TextField} name="name" variant="outlined" margin="dense" label="Name" type="text" required /></Box>
+                                <Box className={classes.center}>
+                                    <Field component={TextField} name="name" variant="outlined" margin="dense" label="Name" type="text" required />
+                                </Box>
+                                <Box className={classes.center} style={{margin: "1em 0"}}>
+                                    <Button variant="outlined" color="secondary" type="submit" disabled={props.isSubmitting || !props.isValid}><AddIcon /> Create</Button>
+                                </Box>
                             </form>
                         )}} />
                     </DialogContent>

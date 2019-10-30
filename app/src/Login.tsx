@@ -1,5 +1,5 @@
 import React from 'react';
-import { MainPalette, DarkPalette } from './palette';
+import { MainPalette, DarkPalette, gradient } from './palette';
 import { ThemeProvider } from '@material-ui/styles';
 import { Formik, Field, FormikProps, FormikActions } from 'formik';
 import { TextField } from 'formik-material-ui';
@@ -18,7 +18,7 @@ import { Location, History } from 'history';
 
 const backgroundStyles = {
   backgroundColor: MainPalette.primary.main,
-  backgroundImage: `linear-gradient(256deg, ${MainPalette.primary.light}, ${MainPalette.primary.dark})`,
+  backgroundImage: gradient,
   width: "100%",
   height: "100%",
   color: "white"

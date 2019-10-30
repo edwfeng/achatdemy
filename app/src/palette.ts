@@ -23,4 +23,6 @@ export const DarkPalette = {
   type: "dark"
 };
 
+export const gradient = `linear-gradient(256deg, ${MainPalette.primary.light}, ${MainPalette.primary.dark})`;
+
 export default MainPalette;
