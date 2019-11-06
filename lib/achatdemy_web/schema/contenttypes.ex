@@ -70,8 +70,27 @@ defmodule AchatdemyWeb.Schema.ContentTypes do
       end
     end
     field :chmod, :integer
+    field :perm_def, :perm_def do
+      resolve fn perm, _, _ ->
+        {:ok, Achatdemy.Perms.get_perm_map(perm.chmod)}
+      end
+    end
+    field :raw_perm_def, :perm_def do
+      resolve fn perm, _, _ ->
+        {:ok, Achatdemy.Perms.get_raw_perm_map(perm.chmod)}
+      end
+    end
     field :inserted_at, :naive_datetime
     field :updated_at, :naive_datetime
+  end
+
+  object :perm_def do
+    field :create_msg,  :boolean
+    field :mod_msg,     :boolean
+    field :create_chat, :boolean
+    field :mod_chat,    :boolean
+    field :mod_comm,    :boolean
+    field :admin,       :boolean
   end
 
   object :chat do
