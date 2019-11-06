@@ -13,24 +13,43 @@ defmodule Achatdemy.Perms do
   end
 
   def get_perm_map(input) when is_integer(input) do
+    case has_raw_perm?(input, :admin) do
+      true ->
+        perms()
+        |> Map.new(fn {level, _} -> {level, true} end)
+      false ->
+        get_raw_perm_map(input)
+    end
+  end
+
+  def get_raw_perm_map(input) when is_integer(input) do
     perms()
-    |> Enum.map(fn {level, num} -> {level, (input &&& num) != 0} end)
+    |> Map.new(fn {level, num} -> {level, (input &&& num) != 0} end)
   end
 
   def has_perm?(input, perm) when is_integer(input) do
-    (input &&& perms()[perm]) != 0
+    input
+    |> get_perm_map()
+    |> Map.get(perm)
   end
 
-  def create_perms(input) do
-    case :admin in input do
-      true ->
-        perms()
-        |> Enum.map(fn {_, num} -> num end)
-        |> Enum.sum()
-      false ->
-        input
-        |> Enum.map(fn perm -> perms()[perm] end)
-        |> Enum.sum()
-    end
+  def has_raw_perm?(input, perm) when is_integer(input) do
+    input
+    |> get_raw_perm_map()
+    |> Map.get(perm)
+  end
+
+  def create_perms(input) when is_map(input) do
+    input
+    |> Enum.filter(fn {_, val} -> val end)
+    |> Enum.map(fn {perm, _} -> perms()[perm] end)
+    |> Enum.sum()
+  end
+
+  def changeset(input, new) when is_integer(input) and is_map(new) do
+    input
+    |> get_raw_perm_map()
+    |> Map.merge(new)
+    |> create_perms()
   end
 end
