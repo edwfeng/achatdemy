@@ -16,6 +16,13 @@ defmodule AchatdemyWeb.Schema do
       resolve &AchatdemyWeb.Resolvers.Users.list_user/3
     end
 
+    @desc "Get current user"
+    field :me, :user do
+      resolve fn _, %{context: %{current_user: %{id: id}}} ->
+        AchatdemyWeb.Resolvers.Users.list_user(1, %{id: id}, 1)
+      end
+    end
+
     @desc "Get a list of communities"
     field :comms, list_of(:comm) do
       resolve &AchatdemyWeb.Resolvers.Comms.list_comms/3

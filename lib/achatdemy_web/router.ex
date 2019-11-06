@@ -10,6 +10,7 @@ defmodule AchatdemyWeb.Router do
   end
 
   pipeline :api do
+    plug AchatdemyWeb.Auth
     plug :accepts, ["json"]
   end
 
