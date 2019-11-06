@@ -11,7 +11,7 @@ defmodule AchatdemyWeb.Auth do
   end
 
   def build_context(conn) do
-    with ["Bearer " <> token] <- get_req_header(conn, "Authorization"),
+    with ["Bearer " <> token] <- get_req_header(conn, "authorization"),
     {:ok, current_user} <- authorize(token) do
       %{current_user: current_user}
     else
