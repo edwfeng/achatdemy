@@ -19,6 +19,8 @@ import logo from "./logo.svg";
 import {AllInbox as AllIcon, Settings as SettingsIcon, Add as AddIcon, Close as CloseIcon} from '@material-ui/icons';
 import {Field, Formik, FormikActions, FormikProps} from "formik";
 import {TextField} from "formik-material-ui";
+import {useQuery} from "@apollo/react-hooks";
+import {GET_ME} from "./queries";
 
 const drawerWidth = 128;
 
@@ -72,6 +74,8 @@ export default function Shell({children}: RouteProps) {
     const [anchorEl, setAnchorEl] = React.useState<(EventTarget & Element) | null>(null);
     const [newCommOpen, setNewCommOpen] = React.useState<boolean>(false);
 
+    const me = useQuery<{me: User}>(GET_ME);
+
     const openAuthMenu = (event: React.MouseEvent) => {
         setAnchorEl(event.currentTarget);
     };
@@ -86,7 +90,7 @@ export default function Shell({children}: RouteProps) {
                     <ThemeProvider theme={theme => createMuiTheme({...theme, palette: DarkPalette as PaletteOptions})}>
                         <img alt="Achatdemy Logo" src={logo} style={{margin: "1em 1.5em"}} />
                         <div style={{margin: "0 auto"}}>
-                            <span style={{marginRight: "0.1em"}}>user</span>
+                            <span style={{marginRight: "0.1em"}}>{(me.data && me.data.me.username) || ""}</span>
                             <IconButton size="small" onClick={openAuthMenu} style={{margin: "0"}}><SettingsIcon /></IconButton>
                         </div>
                         <Menu id="auth-menu" anchorEl={anchorEl} keepMounted open={!!anchorEl} onClose={handleClose}>
