@@ -37,6 +37,19 @@ defmodule Achatdemy.Chats do
   """
   def get_chat!(id), do: Repo.get!(Chat, id)
 
+  def get_chats(comms, args) when is_list(comms) and is_map(args) do
+    query = Chat
+    |> where([chat], chat.comm_id in ^comms)
+
+    args
+    |> Enum.reduce(query, fn {arg, val}, query ->
+      binding = [{arg, val}]
+      query
+      |> where(^binding)
+    end)
+    |> Repo.all
+  end
+
   def get_chats_comm(comm_id) do
     Chat
     |> where(comm_id: ^comm_id)

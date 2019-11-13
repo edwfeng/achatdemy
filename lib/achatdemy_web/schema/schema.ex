@@ -19,7 +19,7 @@ defmodule AchatdemyWeb.Schema do
     @desc "Get current user"
     field :me, :user do
       resolve fn _, %{context: %{current_user: %{id: id}}} ->
-        AchatdemyWeb.Resolvers.Users.list_user(1, %{id: id}, 1)
+        AchatdemyWeb.Resolvers.Users.list_user(%{}, %{id: id}, %{})
       end
     end
 

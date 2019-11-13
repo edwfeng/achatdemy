@@ -161,7 +161,12 @@ defmodule Achatdemy.Users do
       ** (Ecto.NoResultsError)
 
   """
-  def get_perm!(id), do: Repo.get!(Perm, id)
+  def get_perm(uid, cid) do
+    Perm
+    |> where(user_id: ^uid)
+    |> where(comm_id: ^cid)
+    |> Repo.one
+  end
 
   def list_user_perms_user(uid) do
     Perm
