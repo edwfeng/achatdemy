@@ -19,7 +19,7 @@ import logo from "./logo.svg";
 import {AllInbox as AllIcon, Settings as SettingsIcon, Add as AddIcon, Close as CloseIcon} from '@material-ui/icons';
 import {Field, Formik, FormikActions, FormikProps} from "formik";
 import {TextField} from "formik-material-ui";
-import {useQuery} from "@apollo/react-hooks";
+import {useQuery, ApolloConsumer} from "@apollo/react-hooks";
 import {GET_ME} from "./queries";
 
 const drawerWidth = 128;
@@ -94,11 +94,12 @@ export default function Shell({children}: RouteProps) {
                             <IconButton size="small" onClick={openAuthMenu} style={{margin: "0"}}><SettingsIcon /></IconButton>
                         </div>
                         <Menu id="auth-menu" anchorEl={anchorEl} keepMounted open={!!anchorEl} onClose={handleClose}>
-                            <AuthContext.Consumer>{context => <MenuItem onClick={() => {
+                            <AuthContext.Consumer>{context => <ApolloConsumer>{client => <MenuItem onClick={() => {
                                 handleClose();
                                 context.invalidate();
+                                client.resetStore();
                                 history.push(loginPath);
-                            }}>Log out</MenuItem>}</AuthContext.Consumer>
+                            }}>Log out</MenuItem>}</ApolloConsumer>}</AuthContext.Consumer>
                         </Menu>
                         <List>
                             <Divider />
