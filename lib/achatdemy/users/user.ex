@@ -22,5 +22,7 @@ defmodule Achatdemy.Users.User do
     user
     |> cast(attrs, [:username, :password, :email])
     |> validate_required([:username, :password, :email])
+    |> unique_constraint(:username)
+    |> unique_constraint(:email)
   end
 end

@@ -37,6 +37,12 @@ defmodule Achatdemy.Comms do
   """
   def get_comm!(id), do: Repo.get!(Comm, id)
 
+  def get_comm_name!(name) do
+    Comm
+    |> where(name: ^name)
+    |> Repo.one
+  end
+
   @doc """
   Creates a comm.
 
@@ -100,5 +106,19 @@ defmodule Achatdemy.Comms do
   """
   def change_comm(%Comm{} = comm) do
     Comm.changeset(comm, %{})
+  end
+
+  def get_perms_by_comms(_model, ids) do
+    Achatdemy.Users.Perm
+    |> where([perm], perm.comm_id in ^ids)
+    |> Repo.all()
+    |> Enum.group_by(&(&1.comm_id))
+  end
+
+  def get_chats_by_comms(_model, ids) do
+    Achatdemy.Chats.Chat
+    |> where([chat], chat.comm_id in ^ids)
+    |> Repo.all()
+    |> Enum.group_by(&(&1.comm_id))
   end
 end
