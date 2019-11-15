@@ -77,7 +77,7 @@ function watch() {
 
   const compiler = webpack(config);
   return new Promise((resolve, reject) => {
-    compiler.watch({},(err, stats) => {
+    compiler.watch({ignored: /node_modules/},(err, stats) => {
       console.log(`Built.`);
       let messages;
       if (err) {
