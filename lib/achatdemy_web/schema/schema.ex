@@ -108,4 +108,17 @@ defmodule AchatdemyWeb.Schema do
       resolve &AchatdemyWeb.Resolvers.Comms.edit_comm/3
     end
   end
+
+  subscription do
+    field :comm_created, :comm do
+      config fn args, _ ->
+        IO.inspect(args)
+        {:ok, topic: true}
+      end
+
+      trigger :create_comm, topic: fn _ ->
+        true
+      end
+    end
+  end
 end

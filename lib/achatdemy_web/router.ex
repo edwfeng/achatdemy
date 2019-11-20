@@ -19,9 +19,12 @@ defmodule AchatdemyWeb.Router do
 
     resources "/auth", AchatdemyWeb.UserController, only: [:create]
 
-    forward "/graphiql", Absinthe.Plug.GraphiQL,
-      schema: AchatdemyWeb.Schema,
-      interface: :simple
+    if Mix.env == :dev do
+      forward "/graphiql", Absinthe.Plug.GraphiQL,
+        schema: AchatdemyWeb.Schema,
+        socket: AchatdemyWeb.UserSocket,
+        interface: :simple
+    end
 
     forward "/", Absinthe.Plug,
       schema: AchatdemyWeb.Schema

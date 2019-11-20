@@ -1,5 +1,6 @@
 defmodule AchatdemyWeb.Endpoint do
   use Phoenix.Endpoint, otp_app: :achatdemy
+  use Absinthe.Phoenix.Endpoint
 
   socket "/socket", AchatdemyWeb.UserSocket,
     websocket: true,
