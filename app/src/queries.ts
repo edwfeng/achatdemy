@@ -38,6 +38,10 @@ query GetChat($id: ID!) {
             id
             insertedAt
             msg
+            user {
+                id
+                username
+            }
         }
     }
 }

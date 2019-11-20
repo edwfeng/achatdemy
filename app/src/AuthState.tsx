@@ -30,7 +30,7 @@ export class AuthState {
     get id(): string | undefined {
         if (this.token) {
             try {
-                return JSON.parse(btoa(this.token.split(".")[1])).sub as string | undefined;
+                return JSON.parse(atob(this.token.split(".")[1])).sub as string | undefined;
             } catch (e) {
                 console.error(e);
             }

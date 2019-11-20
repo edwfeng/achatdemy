@@ -3,15 +3,55 @@ import {Chat} from "./interfaces";
 import {useQuery} from "@apollo/react-hooks";
 import {GET_CHAT} from "./queries";
 import {Box, makeStyles, Fab} from "@material-ui/core";
-import {TextField} from "formik-material-ui";
+import {TextField, InputBase} from "formik-material-ui";
 import React from "react";
 import {Send as SendIcon} from "@material-ui/icons";
 import { Formik, Field, FormikActions, FormikProps } from "formik";
+import { lightBackground } from "./palette";
+import { AuthContext } from "./AuthState";
 
 const useStyles = makeStyles(theme => ({
     chatMain: {
         width: "100%",
-        height: "100%"
+        height: "100vh",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "stretch"
+    },
+    chatHeader: {
+        borderBottom: `1px solid ${lightBackground}`
+    },
+    chatBody: {
+        height: "100%",
+        overflow: "auto",
+        paddingBottom: theme.spacing(1)
+    },
+    chatFooter: {
+        borderTop: `1px solid ${lightBackground}`
+    },
+    ownMessageContainer: {
+        textAlign: "right",
+        color: "white",
+        "& > div": {
+            backgroundColor: theme.palette.primary.main
+        }
+    },
+    message: {
+        padding: theme.spacing(1),
+        backgroundColor: lightBackground,
+        borderRadius: theme.spacing(1),
+        marginTop: theme.spacing(1),
+        marginLeft: theme.spacing(1),
+        marginRight: theme.spacing(1),
+        width: "auto",
+        display: "inline-block"
+    },
+    messageAuthor: {
+        opacity: 0.8,
+        fontSize: "70%"
+    },
+    messageContent: {
+        whiteSpace: "pre-wrap"
     }
 }));
 
@@ -54,17 +94,25 @@ export default function ChatComponent() {
 
         return (
             <Box className={classes.chatMain}>
-                <Box>
+                <Box className={classes.chatHeader}>
                     <h2 style={{margin: "1em"}}>{chat.title || chat.id}</h2>
                 </Box>
-                <Box>
-                    {messages.map(message => {
-                        return (
-                            <div key={message.id}>{message.msg || ""}</div>
-                        );
-                    })}
+                <Box className={classes.chatBody}>
+                    <AuthContext.Consumer>{auth => {
+                        const userId = auth.id;
+                        return messages.map(message => {
+                            return (
+                                <div key={message.id} className={userId === message.user!.id ? classes.ownMessageContainer : ""}>
+                                    <div className={classes.message}>
+                                        <div className={classes.messageAuthor}>{message.user!.username || message.user!.id}</div>
+                                        <div className={classes.messageContent}>{message.msg || ""}</div>
+                                    </div>
+                                </div>
+                            );
+                        });
+                    }}</AuthContext.Consumer>
                 </Box>
-                <Box>
+                <Box className={classes.chatFooter}>
                     <Formik initialValues={{message: ""}} validate={(values: MessageFormValues) => {
                         return {};
                     }} onSubmit={(values: MessageFormValues, actions: FormikActions<MessageFormValues>) => {

@@ -14,16 +14,22 @@ const styles = makeStyles(theme => ({
     },
     commMain: {
         backgroundColor: lightBackground,
-        padding: theme.spacing(2),
-        width: "100%",
-        minHeight: "100vh"
+        width: "30%",
+        height: "100vh",
+        overflow: "auto"
+    },
+    commHeader: {
+        padding: theme.spacing(2)
     },
     commSubheader: {
         backgroundColor: lightBackground
     },
     activeChat: {
         backgroundColor: theme.palette.primary.main,
-        color: "white"
+        color: "white",
+        "&:hover, &:focus": {
+            backgroundColor: theme.palette.primary.dark
+        }
     }
 }));
 
@@ -64,7 +70,7 @@ export default function Comm({children}: {children: any}) {
         return (
             <Box className={classes.commRoot}>
                 <Box className={classes.commMain}>
-                    {comm.name && (<h1>{comm.name}</h1>)}
+                    {comm.name && (<h1 className={classes.commHeader}>{comm.name}</h1>)}
                     <List>
                         <ListSubheader className={classes.commSubheader}>Chats</ListSubheader>
                         {chats.map(chat => {

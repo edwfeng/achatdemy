@@ -29,5 +29,6 @@ export interface Chat {
 export interface Message {
     id: string;
     insertedAt: string;
-    msg: string;
+    msg: string | undefined;
+    user: User | undefined;
 }
