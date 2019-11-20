@@ -12,6 +12,7 @@ import {createHttpLink} from 'apollo-link-http';
 import {setContext} from 'apollo-link-context';
 import {ApolloProvider} from '@apollo/react-hooks';
 import Comm from "./Comm";
+import Chat from "./Chat";
 
 const link = createHttpLink({uri: "/api"});
 
@@ -62,7 +63,7 @@ class AchatdemyRoot extends React.Component {
                         <Switch>
                             <Route path="/comms/:commId"><Comm>
                                 <Switch>
-                                    <Route path="/comms/:commId/chats/:chatId"><p style={{width: "100%"}}>Chat</p></Route>
+                                    <Route path="/comms/:commId/chats/:chatId"><Chat /></Route>
                                 </Switch>
                             </Comm></Route>
                         </Switch>

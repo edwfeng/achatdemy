@@ -23,4 +23,11 @@ export interface Chat {
     user: User;
     insertedAt: string;
     updatedAt: string;
+    messages: Message[];
+}
+
+export interface Message {
+    id: string;
+    insertedAt: string;
+    msg: string;
 }

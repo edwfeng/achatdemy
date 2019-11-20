@@ -17,7 +17,7 @@ query GetMe {
 `;
 
 export const GET_COMM = gql`
-query GetComm($id: ID) {
+query GetComm($id: ID!) {
     comm(id: $id) {
         name
         chats {
@@ -29,3 +29,16 @@ query GetComm($id: ID) {
     }
 }
 `;
+
+export const GET_CHAT = gql`
+query GetChat($id: ID!) {
+    chat(id: $id) {
+        title
+        messages {
+            id
+            insertedAt
+            msg
+        }
+    }
+}
+`
