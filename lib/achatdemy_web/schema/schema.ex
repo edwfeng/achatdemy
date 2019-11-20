@@ -107,6 +107,13 @@ defmodule AchatdemyWeb.Schema do
 
       resolve &AchatdemyWeb.Resolvers.Comms.edit_comm/3
     end
+
+    field :create_message, :message do
+      arg :chat_id, non_null(:id)
+      arg :msg, non_null(:id)
+
+      resolve &AchatdemyWeb.Resolvers.Messages.create_message/3
+    end
   end
 
   subscription do
