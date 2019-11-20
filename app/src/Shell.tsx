@@ -1,4 +1,4 @@
-import {RouteProps, useHistory} from "react-router";
+import {useHistory} from "react-router";
 import React from "react";
 import {
     IconButton,
@@ -21,6 +21,8 @@ import {Field, Formik, FormikActions, FormikProps} from "formik";
 import {TextField} from "formik-material-ui";
 import {useQuery, ApolloConsumer} from "@apollo/react-hooks";
 import {GET_ME} from "./queries";
+import {Community, Permission, User} from "./interfaces";
+import {Link, NavLink} from "react-router-dom";
 
 const drawerWidth = 128;
 
@@ -68,13 +70,16 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
-export default function Shell({children}: RouteProps) {
+export default function Shell({children}: {children: any}) {
     const history = useHistory();
     const classes = useStyles();
     const [anchorEl, setAnchorEl] = React.useState<(EventTarget & Element) | null>(null);
     const [newCommOpen, setNewCommOpen] = React.useState<boolean>(false);
 
-    const me = useQuery<{me: User}>(GET_ME);
+    const me = useQuery<{me: Partial<User>}>(GET_ME);
+    const perms: Partial<Permission>[] = (
+      me.data && me.data.me && me.data.me.perms
+    ) || [];
 
     const openAuthMenu = (event: React.MouseEvent) => {
         setAnchorEl(event.currentTarget);
@@ -103,13 +108,13 @@ export default function Shell({children}: RouteProps) {
                         </Menu>
                         <List>
                             <Divider />
-                            <ListItem button className={classes.selectedComm}><AllIcon style={{margin: "0.2em"}} /> All</ListItem>
+                            <ListItem button><AllIcon style={{margin: "0.2em"}} /> All</ListItem>
                             <Divider />
-                            <ListItem dense button>Achatdemy Team</ListItem>
-                            <ListItem dense button>ATCS</ListItem>
-                            <ListItem dense button>Class of 2022</ListItem>
-                            <ListItem dense button>BCA</ListItem>
-                            <ListItem dense button>Comp Sci Club</ListItem>
+                            {perms.map(perm =>
+                                <ListItem button component={NavLink} to={`/comms/${perm.commId!}`} key={perm.commId!} activeClassName={classes.selectedComm}>
+                                    {(perm.comm && perm.comm.name) || perm.commId}
+                                </ListItem>
+                            )}
                             <Divider />
                             <ListItem button onClick={() => setNewCommOpen(true)}><AddIcon style={{margin: "0.2em"}} /> New</ListItem>
                         </List>

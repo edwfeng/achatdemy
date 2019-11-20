@@ -4,13 +4,14 @@ import { createMuiTheme, CssBaseline } from '@material-ui/core';
 import { ThemeProvider } from '@material-ui/styles';
 import {Switch, Route, BrowserRouter} from 'react-router-dom';
 import Login from './Login';
-import {PrivateRoute, AuthContext} from "./AuthState";
+import AuthState, {PrivateRoute, AuthContext} from "./AuthState";
 import Shell from "./Shell";
 import {loginPath} from "./Constants";
 import {ApolloClient, InMemoryCache} from 'apollo-boost';
 import {createHttpLink} from 'apollo-link-http';
 import {setContext} from 'apollo-link-context';
 import {ApolloProvider} from '@apollo/react-hooks';
+import Comm from "./Comm";
 
 const link = createHttpLink({uri: "/api"});
 
@@ -34,7 +35,7 @@ class AchatdemyRoot extends React.Component {
   });
 
   static contextType = AuthContext;
-  context: AuthContext | undefined;
+  context: AuthState | undefined;
 
   client = new ApolloClient({
     link: setContext((_, {headers}) => {
@@ -56,7 +57,17 @@ class AchatdemyRoot extends React.Component {
             <CssBaseline />
             <Switch>
                 <Route path={loginPath} exact component={Login} />
-                <PrivateRoute path="/" component={Shell} />
+                <PrivateRoute path="/">
+                    <Shell>
+                        <Switch>
+                            <Route path="/comms/:commId"><Comm>
+                                <Switch>
+                                    <Route path="/comms/:commId/chats/:chatId"><p style={{width: "100%"}}>Chat</p></Route>
+                                </Switch>
+                            </Comm></Route>
+                        </Switch>
+                    </Shell>
+                </PrivateRoute>
             </Switch>
           </ThemeProvider>
         </BrowserRouter>

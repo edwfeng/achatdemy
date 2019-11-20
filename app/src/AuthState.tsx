@@ -26,6 +26,18 @@ export class AuthState {
     get isAuthenticated() {
         return !!this.token;
     }
+
+    get id(): string | undefined {
+        if (this.token) {
+            try {
+                return JSON.parse(btoa(this.token.split(".")[1])).sub as string | undefined;
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+        return;
+    }
 }
 
 export default AuthState;
