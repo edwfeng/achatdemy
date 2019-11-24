@@ -11,7 +11,8 @@ defmodule Achatdemy.Application do
       # Start the Ecto repository
       Achatdemy.Repo,
       # Start the endpoint when the application starts
-      AchatdemyWeb.Endpoint
+      AchatdemyWeb.Endpoint,
+      {Absinthe.Subscription, [AchatdemyWeb.Endpoint]}
       # Starts a worker by calling: Achatdemy.Worker.start_link(arg)
       # {Achatdemy.Worker, arg},
     ]

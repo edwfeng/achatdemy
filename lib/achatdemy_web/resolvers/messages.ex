@@ -24,4 +24,13 @@ defmodule AchatdemyWeb.Resolvers.Messages do
   def list_file(_, %{id: id}, _) do
     {:ok, Messages.get_file!(id)}
   end
+
+  def create_message(_, args, %{context: %{current_user: %{id: uid}}}) do
+    case Messages.create_message(Map.put(args, :user_id, uid)) do
+      {:ok, message} ->
+        {:ok, message}
+      _err ->
+        {:error, "Could not create message."}
+    end
+  end
 end

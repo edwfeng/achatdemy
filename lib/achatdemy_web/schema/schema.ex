@@ -19,7 +19,7 @@ defmodule AchatdemyWeb.Schema do
     @desc "Get current user"
     field :me, :user do
       resolve fn _, %{context: %{current_user: %{id: id}}} ->
-        AchatdemyWeb.Resolvers.Users.list_user(1, %{id: id}, 1)
+        AchatdemyWeb.Resolvers.Users.list_user(%{}, %{id: id}, %{})
       end
     end
 
@@ -106,6 +106,26 @@ defmodule AchatdemyWeb.Schema do
       arg :name, :string
 
       resolve &AchatdemyWeb.Resolvers.Comms.edit_comm/3
+    end
+
+    field :create_message, :message do
+      arg :chat_id, non_null(:id)
+      arg :msg, non_null(:id)
+
+      resolve &AchatdemyWeb.Resolvers.Messages.create_message/3
+    end
+  end
+
+  subscription do
+    field :comm_created, :comm do
+      config fn args, _ ->
+        IO.inspect(args)
+        {:ok, topic: true}
+      end
+
+      trigger :create_comm, topic: fn _ ->
+        true
+      end
     end
   end
 end

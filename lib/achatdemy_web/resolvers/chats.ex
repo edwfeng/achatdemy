@@ -1,24 +1,21 @@
 defmodule AchatdemyWeb.Resolvers.Chats do
   alias Achatdemy.Chats
 
-  def list_chats(_, %{comm_id: comm_id}, _) do
-    {:ok, Chats.get_chats_comm(comm_id)}
+  def list_chats(_, params, %{context: %{current_user: %{id: uid}}}) when is_map(params) do
+    chats = Achatdemy.Users.list_user_perms_user(uid)
+    |> Enum.map(fn perm -> perm.comm_id end)
+    |> IO.inspect
+    |> Chats.get_chats(params)
+    |> IO.inspect
+    {:ok, chats}
   end
 
-  def list_chats(_, %{user_id: user_id}, _) do
-    {:ok, Chats.get_chats_user(user_id)}
-  end
-
-  def list_chats(_, %{type: type}, _) do
-    {:ok, Chats.get_chats_type(type)}
-  end
-
-  def list_chats(_, _, _) do
-    {:ok, Chats.list_chats()}
-  end
-
-  def list_chat(_, %{id: id}, _) do
-    {:ok, Chats.get_chat!(id)}
+  def list_chat(_, %{id: id}, %{context: %{current_user: %{id: uid}}}) do
+    chat = Chats.get_chat!(id)
+    case Achatdemy.Users.get_perm(uid, chat.comm_id) do
+      nil -> {:error, "The chat does not exist."}
+      _ -> {:ok, chat}
+    end
   end
 
   def list_widgets(_, %{chat_id: chat_id}, _) do

@@ -17,7 +17,7 @@ defmodule Achatdemy.Messages.Message do
   @doc false
   def changeset(message, attrs) do
     message
-    |> cast(attrs, [:msg])
-    |> validate_required([:msg])
+    |> cast(attrs, [:msg, :chat_id, :user_id])
+    |> validate_required([:msg, :chat_id, :user_id])
   end
 end
