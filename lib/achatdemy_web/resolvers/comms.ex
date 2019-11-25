@@ -1,5 +1,6 @@
 defmodule AchatdemyWeb.Resolvers.Comms do
   alias Achatdemy.Comms
+  alias Achatdemy.Users
 
   def list_comms(_, _, _) do
     {:ok, Comms.list_comms()}
@@ -13,10 +14,13 @@ defmodule AchatdemyWeb.Resolvers.Comms do
     {:ok, Comms.get_comm_name!(name)}
   end
 
-  def create_comm(_, args, _) do
+  def create_comm(_, args, %{context: %{current_user: %{id: uid}}}) do
     case Comms.create_comm(args) do
       {:ok, comm} ->
-        {:ok, comm}
+        case Users.link_user_comm(uid, comm.id, %{chmod: 63}) do
+          _ ->
+            {:ok, comm}
+        end
       _err ->
         {:error, "Could not create comm."}
     end

@@ -13,3 +13,12 @@ mutation CreateMessage($chat: ID!, $text: String!) {
     }
 }
 `;
+
+export const CREATE_COMM = gql`
+mutation CreateComm($name: String) {
+    create_comm(name: $name) {
+        id
+        name
+    }
+}
+`;

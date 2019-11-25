@@ -19,10 +19,11 @@ import logo from "./logo.svg";
 import {AllInbox as AllIcon, Settings as SettingsIcon, Add as AddIcon, Close as CloseIcon} from '@material-ui/icons';
 import {Field, Formik, FormikActions, FormikProps} from "formik";
 import {TextField} from "formik-material-ui";
-import {useQuery, ApolloConsumer} from "@apollo/react-hooks";
+import {useQuery, ApolloConsumer, useMutation} from "@apollo/react-hooks";
 import {GET_ME} from "./queries";
 import {Community, Permission, User} from "./interfaces";
 import {Link, NavLink} from "react-router-dom";
+import { CREATE_COMM } from "./mutations";
 
 const drawerWidth = 128;
 
@@ -75,6 +76,22 @@ export default function Shell({children}: {children: any}) {
     const classes = useStyles();
     const [anchorEl, setAnchorEl] = React.useState<(EventTarget & Element) | null>(null);
     const [newCommOpen, setNewCommOpen] = React.useState<boolean>(false);
+
+    const [createComm] = useMutation(CREATE_COMM, {update(cache, {data: {create_comm}}) {
+        const {me} = cache.readQuery<{me: Partial<User>}>({query: GET_ME})!;
+        if (me) {
+            cache.writeQuery({
+                query: GET_ME,
+                data: {
+                    me: {...me, perms: ((me.perms || []) as any[]).concat([{
+                        __typename: "Perm",
+                        commId: create_comm.id,
+                        comm: create_comm
+                    }])}
+                }
+            });
+        }
+    }});
 
     const me = useQuery<{me: Partial<User>}>(GET_ME);
     const perms: Partial<Permission>[] = (
@@ -132,11 +149,13 @@ export default function Shell({children}: {children: any}) {
                         </p>
                         <Formik initialValues={{name: ""}} validate={
                             ({name}: {name: string}) => ((!name || name.length < 1) ? {name: "Required."} : {})
-                        } onSubmit={({name}: {name: string}, actions: FormikActions<{name: string}>) => {
+                        } onSubmit={async ({name}: {name: string}, actions: FormikActions<{name: string}>) => {
                             try {
+                                await createComm({variables: {name}});
                                 actions.setSubmitting(false);
                                 setNewCommOpen(false);
                             } catch (e) {
+                                console.log(e);
                                 actions.setErrors({name: "An internal error occurred"});
                                 actions.setSubmitting(false);
                             }
