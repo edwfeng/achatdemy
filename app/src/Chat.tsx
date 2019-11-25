@@ -1,6 +1,6 @@
 import {useParams} from "react-router";
-import {Chat} from "./interfaces";
-import {useQuery} from "@apollo/react-hooks";
+import {Chat, Message} from "./interfaces";
+import {useQuery, useMutation} from "@apollo/react-hooks";
 import {GET_CHAT} from "./queries";
 import {Box, makeStyles, Fab} from "@material-ui/core";
 import {TextField, InputBase} from "formik-material-ui";
@@ -9,6 +9,8 @@ import {Send as SendIcon} from "@material-ui/icons";
 import { Formik, Field, FormikActions, FormikProps } from "formik";
 import { lightBackground } from "./palette";
 import { AuthContext } from "./AuthState";
+import { CREATE_MESSAGE } from "./mutations";
+import { MESSAGE_CREATED_SUBSCRIPTION } from "./subscriptions";
 
 const useStyles = makeStyles(theme => ({
     chatMain: {
@@ -61,7 +63,26 @@ export default function ChatComponent() {
     const classes = useStyles();
 
     const { chatId } = useParams<{chatId: string}>();
-    let { data, loading, error } = useQuery<{chat: Partial<Chat>}>(GET_CHAT, {variables: {id: chatId}});
+    let { data, loading, error, subscribeToMore } = useQuery<{chat: Partial<Chat>}>(GET_CHAT, {variables: {id: chatId}});
+
+    const [createMessage] = useMutation(CREATE_MESSAGE, {update(cache, {data: {create_message}}) {
+        const {chat} = cache.readQuery<{chat: Partial<Chat>}>({query: GET_CHAT, variables: {id: chatId}})!;
+        cache.writeQuery({
+            query: GET_CHAT,
+            variables: {id: chatId},
+            data: {
+                chat: {...chat, messages: (prev.chat.messages || []).filter(msg => msg.id !== create_message.id).concat([create_message])}
+            }
+        });
+    }});
+
+    subscribeToMore<{messageCreated: Message}>({
+        document: MESSAGE_CREATED_SUBSCRIPTION,
+        variables: {id: chatId},
+        updateQuery(prev, {subscriptionData: {data: {messageCreated}}}) {
+            return {chat: {...prev.chat, messages: (prev.chat.messages || []).filter(msg => msg.id !== messageCreated.id).concat([messageCreated])}};
+        }
+    });
     
     if (error || (!loading && !data)) {
         let message = "Unknown error.";
@@ -114,9 +135,10 @@ export default function ChatComponent() {
                 </Box>
                 <Box className={classes.chatFooter}>
                     <Formik initialValues={{message: ""}} validate={(values: MessageFormValues) => {
-                        return {};
+                        return {}; 
                     }} onSubmit={(values: MessageFormValues, actions: FormikActions<MessageFormValues>) => {
-                        actions.setErrors({message: "Not implemented"});
+                        createMessage({variables: {chat: chatId, text: values.message}});
+                        actions.setValues({message: ""});
                         actions.setSubmitting(false);
                     }} render={(props: FormikProps<MessageFormValues>) => {
                         return (

@@ -8,13 +8,24 @@ import AuthState, {PrivateRoute, AuthContext} from "./AuthState";
 import Shell from "./Shell";
 import {loginPath} from "./Constants";
 import {ApolloClient, InMemoryCache} from 'apollo-boost';
+import {split} from 'apollo-link';
 import {createHttpLink} from 'apollo-link-http';
+import {Socket as PhoenixSocket} from 'phoenix';
+import * as AbsintheSocket from '@absinthe/socket';
+import {createAbsintheSocketLink} from '@absinthe/socket-apollo-link';
 import {setContext} from 'apollo-link-context';
 import {ApolloProvider} from '@apollo/react-hooks';
 import Comm from "./Comm";
 import Chat from "./Chat";
+import { getMainDefinition } from 'apollo-utilities';
 
-const link = createHttpLink({uri: "/api"});
+const httpLink = createHttpLink({uri: "/api"});
+const wsLink = createAbsintheSocketLink(AbsintheSocket.create(
+    new PhoenixSocket("ws://localhost:4000/socket")));
+const link = split(({query}) => {
+    const definition = getMainDefinition(query);
+    return definition.kind === "OperationDefinition" && definition.operation === "subscription";
+}, wsLink, httpLink);
 
 class AchatdemyRoot extends React.Component {
   theme = createMuiTheme({
