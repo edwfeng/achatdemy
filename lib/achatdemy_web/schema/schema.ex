@@ -5,6 +5,9 @@ defmodule AchatdemyWeb.Schema do
   query do
     @desc "Get a list of users"
     field :users, list_of(:user) do
+      arg :id, :id
+      arg :username, :string
+      arg :email, :string
       resolve &AchatdemyWeb.Resolvers.Users.list_users/3
     end
 
@@ -18,9 +21,7 @@ defmodule AchatdemyWeb.Schema do
 
     @desc "Get current user"
     field :me, :user do
-      resolve fn _, %{context: %{current_user: %{id: id}}} ->
-        AchatdemyWeb.Resolvers.Users.list_user(%{}, %{id: id}, %{})
-      end
+      resolve &AchatdemyWeb.Resolvers.Users.current_user/3
     end
 
     @desc "Get a list of communities"
@@ -83,6 +84,7 @@ defmodule AchatdemyWeb.Schema do
 
     @desc "Get a list of files"
     field :files, list_of(:file) do
+      arg :message_id, :id
       resolve &AchatdemyWeb.Resolvers.Messages.list_files/3
     end
 

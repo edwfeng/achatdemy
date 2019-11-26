@@ -37,16 +37,24 @@ defmodule Achatdemy.Users do
   """
   def get_user!(id), do: Repo.get!(User, id)
 
-  def get_user_name!(username) do
-    User
-    |> where(username: ^username)
+  def get_users(args) when is_map(args) do
+    get_user_query(args)
+    |> Repo.all
+  end
+
+  def get_user(args) when is_map(args) do
+    get_user_query(args)
     |> Repo.one
   end
 
-  def get_user_email!(email) do
-    User
-    |> where(email: ^email)
-    |> Repo.one
+  defp get_user_query(args) when is_map(args) do
+    query = User
+    args
+    |> Enum.reduce(query, fn {arg, val}, query ->
+      binding = [{arg, val}]
+      query
+      |> where(^binding)
+    end)
   end
 
   def user_login(username, password) do
@@ -161,23 +169,33 @@ defmodule Achatdemy.Users do
       ** (Ecto.NoResultsError)
 
   """
-  def get_perm(uid, cid) do
+
+  def list_perms_uid(uid) do
     Perm
     |> where(user_id: ^uid)
-    |> where(comm_id: ^cid)
+    |> Repo.all()
+  end
+
+  def get_perms(comms, args) when is_list(comms) and is_map(args) do
+    get_perm_query(comms, args)
+    |> Repo.all
+  end
+
+  def get_perm(comms, args) when is_list(comms) and is_map(args) do
+    get_perm_query(comms, args)
     |> Repo.one
   end
 
-  def list_user_perms_user(uid) do
-    Perm
-    |> where(user_id: ^uid)
-    |> Repo.all()
-  end
+  defp get_perm_query(comms, args) when is_list(comms) and is_map(args) do
+    query = Perm
+    |> where([perm], perm.comm_id in ^comms)
 
-  def list_user_perms_comm(cid) do
-    Perm
-    |> where(comm_id: ^cid)
-    |> Repo.all()
+    args
+    |> Enum.reduce(query, fn {arg, val}, query ->
+      binding = [{arg, val}]
+      query
+      |> where(^binding)
+    end)
   end
 
   @doc """

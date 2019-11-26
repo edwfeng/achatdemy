@@ -1,16 +1,12 @@
 defmodule AchatdemyWeb.Resolvers.Comms do
   alias Achatdemy.Comms
 
-  def list_comms(_, _, _) do
-    {:ok, Comms.list_comms()}
+  def list_comms(_, args, _) do
+    {:ok, Comms.get_comms(args)}
   end
 
-  def list_comm(_, %{id: id}, _) do
-    {:ok, Comms.get_comm!(id)}
-  end
-
-  def list_comm(_, %{name: name}, _) do
-    {:ok, Comms.get_comm_name!(name)}
+  def list_comm(_, args, _) do
+    {:ok, Comms.get_comm(args)}
   end
 
   def create_comm(_, args, _) do

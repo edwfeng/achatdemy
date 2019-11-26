@@ -1,31 +1,22 @@
 defmodule AchatdemyWeb.Resolvers.Users do
   alias Achatdemy.Users
 
-  def list_users(_, _, _) do
-    {:ok, Users.list_users()}
+  def list_users(_, args, _) do
+    {:ok, Users.get_users(args)}
   end
 
-  def list_user(_, %{id: id}, _) do
-    {:ok, Users.get_user!(id)}
+  def list_user(_, args, _) do
+    {:ok, Users.get_user(args)}
   end
 
-  def list_user(_, %{username: username}, _) do
-    {:ok, Users.get_user_name!(username)}
+  def current_user(_, _, %{context: %{current_user: %{id: uid}}}) do
+    {:ok, Users.get_user(%{id: uid})}
   end
 
-  def list_user(_, %{email: email}, _) do
-    {:ok, Users.get_user_email!(email)}
-  end
-
-  def list_perms(_, %{user_id: user_id}, _) do
-    {:ok, Users.list_user_perms_user(user_id)}
-  end
-
-  def list_perms(_, %{comm_id: comm_id}, _) do
-    {:ok, Users.list_user_perms_comm(comm_id)}
-  end
-
-  def list_perms(_, _, _) do
-    {:ok, Users.list_user_perms()}
+  def list_perms(_, args, %{context: %{current_user: %{id: uid}}}) do
+    perms = Users.list_perms_uid(uid)
+    |> Enum.map(fn perm -> perm.comm_id end)
+    |> Users.get_perms(args)
+    {:ok, perms}
   end
 end

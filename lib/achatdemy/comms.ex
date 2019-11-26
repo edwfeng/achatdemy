@@ -37,10 +37,25 @@ defmodule Achatdemy.Comms do
   """
   def get_comm!(id), do: Repo.get!(Comm, id)
 
-  def get_comm_name!(name) do
-    Comm
-    |> where(name: ^name)
+  def get_comms(args) when is_map(args) do
+    get_comm_query(args)
+    |> Repo.all
+  end
+
+  def get_comm(args) when is_map(args) do
+    get_comm_query(args)
     |> Repo.one
+  end
+
+  defp get_comm_query(args) when is_map(args) do
+    query = Comm
+
+    args
+    |> Enum.reduce(query, fn {arg, val}, query ->
+      binding = [{arg, val}]
+      query
+      |> where(^binding)
+    end)
   end
 
   @doc """
