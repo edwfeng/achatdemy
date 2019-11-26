@@ -134,3 +134,5 @@ typings/
 # React
 app/build
 
+# Generated GraphQL files
+schema.graphql

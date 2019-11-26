@@ -129,5 +129,17 @@ defmodule AchatdemyWeb.Schema do
         true
       end
     end
+
+    field :message_created, :message do
+      arg :chat_id, non_null(:id)
+
+      config fn args, _ ->
+        {:ok, topic: args.chat_id}
+      end
+
+      trigger :create_message, topic: fn message ->
+        message.chat_id
+      end
+    end
   end
 end

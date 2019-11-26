@@ -1,0 +1,12 @@
+{
+    "name": "Achatdemy Local",
+    "schemaPath": "schema.graphql",
+    "extensions": {
+        "endpoints": {
+            "Localhost": {
+                "url": "http://localhost:4000/api",
+                "introspect": true
+            }
+        }
+    }
+}
