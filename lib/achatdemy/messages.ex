@@ -239,21 +239,6 @@ defmodule Achatdemy.Messages do
     File.changeset(file, %{})
   end
 
-  def link_msg_file(message_id, file_id) do
-    %Achatdemy.Messages.MsgFilesXref{
-      message_id: message_id,
-      file_id: file_id
-    }
-    |> Repo.insert!
-  end
-
-  def unlink_msg_file(message_id, file_id) do
-    Achatdemy.Messages.MsgFilesXref
-    |> where(message_id: ^message_id)
-    |> where(file_id: ^file_id)
-    |> Repo.delete_all
-  end
-
   def get_files_by_messages(_model, ids) do
     Achatdemy.Messages.Message
     |> where([post], post.id in ^ids)
@@ -262,12 +247,11 @@ defmodule Achatdemy.Messages do
     |> Map.new(&{&1.id, &1.files})
   end
 
-  def get_messages_by_files(_model, ids) do
-    Achatdemy.Messages.File
-    |> where([file], file.id in ^ids)
-    |> preload(:messages)
+  def get_message_by_files(_model, ids) do
+    Achatdemy.Messages.Message
+    |> where([msg], msg.id in ^ids)
     |> Repo.all()
-    |> Map.new(&{&1.id, &1.messages})
+    |> Map.new(&{&1.id, &1})
   end
 
   def get_chat_by_messages(_model, ids) do

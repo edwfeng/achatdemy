@@ -65,12 +65,9 @@ message3 = %Message{
 
 file1 = %File{
   name: "Not a virus",
-  path: "/usr/lib/virus"
+  path: "/usr/lib/virus",
+  message_id: message3.id
 } |> Repo.insert!
-
-Achatdemy.Messages.link_msg_file(message3.id, file1.id)
-Achatdemy.Messages.unlink_msg_file(message3.id, file1.id)
-Achatdemy.Messages.link_msg_file(message3.id, file1.id)
 
 _widget1 = %Widget{
   desc: "A widget",

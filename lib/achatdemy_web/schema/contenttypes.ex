@@ -183,10 +183,10 @@ defmodule AchatdemyWeb.Schema.ContentTypes do
     field :path, :string
     field :inserted_at, :naive_datetime
     field :updated_at, :naive_datetime
-    field :messages, list_of(:message) do
+    field :message, :message do
       resolve fn file, _, _ ->
-        batch({Achatdemy.Messages, :get_messages_by_files}, file.id, fn batch_results ->
-          {:ok, Map.get(batch_results, file.id)}
+        batch({Achatdemy.Messages, :get_message_by_file}, file.message_id, fn batch_results ->
+          {:ok, Map.get(batch_results, file.message_id)}
         end)
       end
     end
