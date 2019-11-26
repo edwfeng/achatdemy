@@ -101,6 +101,14 @@ defmodule AchatdemyWeb.Schema do
       resolve &AchatdemyWeb.Resolvers.Comms.create_comm/3
     end
 
+    field :create_chat, :chat do
+      arg :comm_id, non_null(:id)
+      arg :title, non_null(:string)
+      arg :type, non_null(:integer)
+
+      resolve &AchatdemyWeb.Resolvers.Chats.create_chat/3
+    end
+
     field :edit_comm, :comm do
       arg :id, :id
       arg :name, :string

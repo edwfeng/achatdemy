@@ -1,11 +1,15 @@
 import {useParams} from "react-router";
 import React from "react";
-import {useQuery} from "@apollo/react-hooks";
+import {useQuery, useMutation} from "@apollo/react-hooks";
 import {Community} from "./interfaces";
 import {GET_COMM} from "./queries";
-import {Box, List, ListItem, ListSubheader, makeStyles} from "@material-ui/core";
+import {CREATE_CHAT} from "./mutations";
+import {Box, List, ListItem, ListSubheader, makeStyles, Fab, IconButton} from "@material-ui/core";
 import {lightBackground} from "./palette";
 import {NavLink} from "react-router-dom";
+import { Add } from "@material-ui/icons";
+import { Formik, FormikProps, Field, FormikActions } from "formik";
+import { TextField } from "formik-material-ui";
 
 const styles = makeStyles(theme => ({
     commRoot: {
@@ -38,6 +42,17 @@ export default function Comm({children}: {children: any}) {
 
     const id = useParams<{commId: string}>().commId;
     const { data, loading, error } = useQuery<{comm: Partial<Community>}, {id: string}>(GET_COMM, {variables: {id}});
+
+    const [createChat] = useMutation(CREATE_CHAT, {update(cache, {data: {create_chat}}) {
+        const {comm} = cache.readQuery<{comm: Partial<Community>}>({query: GET_COMM, variables: {id}})!;
+        cache.writeQuery({
+            query: GET_COMM,
+            variables: {id},
+            data: {
+                comm: {...comm, chats: (comm.chats || []).concat([create_chat])}
+            }
+        });
+    }});
 
     if (error || (!loading && !data)) {
         let message = "Unknown error.";
@@ -72,7 +87,7 @@ export default function Comm({children}: {children: any}) {
                 <Box className={classes.commMain}>
                     {comm.name && (<h1 className={classes.commHeader}>{comm.name}</h1>)}
                     <List>
-                        <ListSubheader className={classes.commSubheader}>Chats</ListSubheader>
+                        <ListSubheader className={classes.commSubheader}>Questions</ListSubheader>
                         {chats.map(chat => {
                             return (
                                 <ListItem button key={chat.id} to={`/comms/${id}/chats/${chat.id}`} component={NavLink} activeClassName={classes.activeChat}>
@@ -80,6 +95,26 @@ export default function Comm({children}: {children: any}) {
                                 </ListItem>
                             );
                         })}
+                        <ListItem>
+                            <Formik initialValues={{title: ""}} validate={
+                                ({title}: {title: string}) => ((!title || title.length < 1) ? {title: "Required."} : {})
+                            } onSubmit={async ({title}: {title: string}, actions: FormikActions<{title: string}>) => {
+                                try {
+                                    await createChat({variables: {title, comm: id}});
+                                    actions.setSubmitting(false);
+                                    actions.resetForm({title: ""});
+                                } catch (e) {
+                                    console.log(e);
+                                    actions.setErrors({title: "An internal error occurred"});
+                                    actions.setSubmitting(false);
+                                }
+                            }} render={(props: FormikProps<{title: string}>) => { return (
+                                <form onSubmit={props.handleSubmit}>
+                                    <Field component={TextField} name="title" variant="standard" margin="dense" label="Ask a question..." type="text" required />
+                                    <IconButton aria-label="New question" size="small" color="secondary" type="submit"><Add /></IconButton>
+                                </form>
+                            )}} />
+                        </ListItem>
                     </List>
                 </Box>
                 {children}

@@ -22,3 +22,14 @@ mutation CreateComm($name: String) {
     }
 }
 `;
+
+export const CREATE_CHAT = gql`
+mutation CreateChat($comm: ID!, $title: String) {
+    create_chat(commId: $comm, title: $title, type: 3) {
+        id
+        title
+        type
+        userId
+    }
+}
+`;

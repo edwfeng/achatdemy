@@ -71,7 +71,7 @@ export default function ChatComponent() {
             query: GET_CHAT,
             variables: {id: chatId},
             data: {
-                chat: {...chat, messages: (prev.chat.messages || []).filter(msg => msg.id !== create_message.id).concat([create_message])}
+                chat: {...chat, messages: (chat.messages || []).filter(msg => msg.id !== create_message.id).concat([create_message])}
             }
         });
     }});
