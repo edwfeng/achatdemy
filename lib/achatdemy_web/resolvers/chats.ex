@@ -49,4 +49,14 @@ defmodule AchatdemyWeb.Resolvers.Chats do
         {:ok, widget}
     end
   end
+
+  def create_chat(_, args, %{context: %{current_user: %{id: uid}}}) do
+    IO.inspect(Map.put(args, :user_id, uid))
+    case Chats.create_chat(Map.put(args, :user_id, uid)) do
+      {:ok, chat} ->
+        {:ok, chat}
+      _err ->
+        {:error, "Could not create chat."}
+    end
+  end
 end

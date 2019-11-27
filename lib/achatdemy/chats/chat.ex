@@ -20,7 +20,7 @@ defmodule Achatdemy.Chats.Chat do
   @doc false
   def changeset(chat, attrs) do
     chat
-    |> cast(attrs, [:title, :type])
-    |> validate_required([:title, :type])
+    |> cast(attrs, [:title, :type, :comm_id, :user_id])
+    |> validate_required([:title, :type, :comm_id])
   end
 end
