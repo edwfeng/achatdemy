@@ -55,6 +55,25 @@ const useStyles = makeStyles(theme => ({
     },
     messageContent: {
         whiteSpace: "pre-wrap"
+    },
+    chatFooterForm: {
+        width: "100%",
+        display: "flex",
+        padding: theme.spacing(1),
+        alignItems: "center"
+    },
+    chatFooterInput: {
+        width: "100%",
+        "& > input": {
+            width: "100%",
+            padding: "0 20px",
+            height: "40px",
+            borderRadius: "20px",
+            backgroundColor: lightBackground,
+        }
+    },
+    chatFooterButtonContainer: {
+        paddingLeft: "1em"
     }
 }));
 
@@ -152,9 +171,9 @@ export default function ChatComponent() {
                         actions.setSubmitting(false);
                     }} render={(props: FormikProps<MessageFormValues>) => {
                         return (
-                            <form onSubmit={props.handleSubmit}>
-                                <Field component={TextField} name="message" variant="filled" margin="dense" label="Message" type="text" />
-                                <Fab aria-label="Send message" size="small" color="primary" type="submit"><SendIcon /></Fab>
+                            <form onSubmit={props.handleSubmit} className={classes.chatFooterForm}>
+                                <Field component={InputBase} className={classes.chatFooterInput} name="message" variant="filled" margin="dense" placeholder="Message" type="text" />
+                                <div className={classes.chatFooterButtonContainer}><Fab aria-label="Send message" size="small" color="primary" type="submit"><SendIcon /></Fab></div>
                             </form>
                         );
                     }} />

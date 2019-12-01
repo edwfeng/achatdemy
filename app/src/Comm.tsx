@@ -7,7 +7,7 @@ import {CREATE_CHAT} from "./mutations";
 import {Box, List, ListItem, ListSubheader, makeStyles, Fab, IconButton} from "@material-ui/core";
 import {lightBackground} from "./palette";
 import {NavLink} from "react-router-dom";
-import { Add } from "@material-ui/icons";
+import { AddCircle as Add } from "@material-ui/icons";
 import { Formik, FormikProps, Field, FormikActions } from "formik";
 import { TextField } from "formik-material-ui";
 
@@ -34,6 +34,14 @@ const styles = makeStyles(theme => ({
         "&:hover, &:focus": {
             backgroundColor: theme.palette.primary.dark
         }
+    },
+    addChatForm: {
+        display: "flex",
+        alignItems: "baseline"
+    },
+    addChatButton: {
+        width: "2rem",
+        height: "2rem"
     }
 }));
 
@@ -109,9 +117,9 @@ export default function Comm({children}: {children: any}) {
                                     actions.setSubmitting(false);
                                 }
                             }} render={(props: FormikProps<{title: string}>) => { return (
-                                <form onSubmit={props.handleSubmit}>
+                                <form onSubmit={props.handleSubmit} className={classes.addChatForm}>
                                     <Field component={TextField} name="title" variant="standard" margin="dense" label="Ask a question..." type="text" required />
-                                    <IconButton aria-label="New question" size="small" color="secondary" type="submit"><Add /></IconButton>
+                                    <IconButton aria-label="New question" size="small" color="primary" type="submit" className={classes.addChatButton}><Add /></IconButton>
                                 </form>
                             )}} />
                         </ListItem>
