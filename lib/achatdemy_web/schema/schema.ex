@@ -172,7 +172,7 @@ defmodule AchatdemyWeb.Schema do
       end
     end
 
-    field :widget_added, :widget do
+    field :widget_created, :widget do
       arg :chat_id, non_null(:id)
 
       config fn args, _ ->
@@ -184,7 +184,7 @@ defmodule AchatdemyWeb.Schema do
       end
     end
 
-    field :widget_changed, :widget do
+    field :widget_edited, :widget do
       arg :chat_id, non_null(:id)
 
       config fn args, _ ->
@@ -196,7 +196,7 @@ defmodule AchatdemyWeb.Schema do
       end
     end
 
-    field :widget_removed, :widget do
+    field :widget_deleted, :widget do
       arg :chat_id, non_null(:id)
 
       config fn args, _ ->
