@@ -21,7 +21,7 @@ defmodule Achatdemy.Guardian do
     # the resource id so here we'll rely on that to look it up.
     id = claims["sub"]
     user = Achatdemy.Users.get_user!(id)
-    {:ok,  user}
+    {:ok, user}
   end
 
   # def resource_from_claims(_claims) do

@@ -17,7 +17,7 @@ defmodule AchatdemyWeb.Resolvers.Comms do
           _ ->
             {:ok, comm}
         end
-      _err ->
+      _ ->
         {:error, "Could not create comm."}
     end
   end
@@ -27,7 +27,7 @@ defmodule AchatdemyWeb.Resolvers.Comms do
     case Comms.update_comm(comm, args) do
       {:ok, comm} ->
         {:ok, comm}
-      _err ->
+      _ ->
         {:error, "Could not edit comm."}
     end
   end

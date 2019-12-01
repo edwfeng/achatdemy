@@ -50,7 +50,7 @@ defmodule AchatdemyWeb.Resolvers.Messages do
     case Messages.create_message(Map.put(args, :user_id, uid)) do
       {:ok, message} ->
         {:ok, message}
-      _err ->
+      _ ->
         {:error, "Could not create message."}
     end
   end

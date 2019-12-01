@@ -103,6 +103,13 @@ defmodule AchatdemyWeb.Schema do
       resolve &AchatdemyWeb.Resolvers.Comms.create_comm/3
     end
 
+    field :edit_comm, :comm do
+      arg :id, non_null(:id)
+      arg :name, :string
+
+      resolve &AchatdemyWeb.Resolvers.Comms.edit_comm/3
+    end
+
     field :create_chat, :chat do
       arg :comm_id, non_null(:id)
       arg :title, non_null(:string)
@@ -111,16 +118,9 @@ defmodule AchatdemyWeb.Schema do
       resolve &AchatdemyWeb.Resolvers.Chats.create_chat/3
     end
 
-    field :edit_comm, :comm do
-      arg :id, :id
-      arg :name, :string
-
-      resolve &AchatdemyWeb.Resolvers.Comms.edit_comm/3
-    end
-
     field :create_message, :message do
       arg :chat_id, non_null(:id)
-      arg :msg, non_null(:id)
+      arg :msg, non_null(:string)
 
       resolve &AchatdemyWeb.Resolvers.Messages.create_message/3
     end
@@ -150,8 +150,7 @@ defmodule AchatdemyWeb.Schema do
 
   subscription do
     field :comm_created, :comm do
-      config fn args, _ ->
-        IO.inspect(args)
+      config fn _, _ ->
         {:ok, topic: true}
       end
 

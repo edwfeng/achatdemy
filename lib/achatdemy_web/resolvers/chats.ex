@@ -4,9 +4,7 @@ defmodule AchatdemyWeb.Resolvers.Chats do
   def list_chats(_, args, %{context: %{current_user: %{id: uid}}}) do
     chats = Achatdemy.Users.list_perms_uid(uid)
     |> Enum.map(fn perm -> perm.comm_id end)
-    |> IO.inspect
     |> Chats.get_chats(args)
-    |> IO.inspect
     {:ok, chats}
   end
 
@@ -51,11 +49,10 @@ defmodule AchatdemyWeb.Resolvers.Chats do
   end
 
   def create_chat(_, args, %{context: %{current_user: %{id: uid}}}) do
-    IO.inspect(Map.put(args, :user_id, uid))
     case Chats.create_chat(Map.put(args, :user_id, uid)) do
       {:ok, chat} ->
         {:ok, chat}
-      _err ->
+      _ ->
         {:error, "Could not create chat."}
     end
   end
