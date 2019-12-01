@@ -124,6 +124,28 @@ defmodule AchatdemyWeb.Schema do
 
       resolve &AchatdemyWeb.Resolvers.Messages.create_message/3
     end
+
+    field :create_widget, :widget do
+      arg :chat_id, non_null(:id)
+      arg :desc, non_null(:string)
+      arg :uri, non_null(:string)
+
+      resolve &AchatdemyWeb.Resolvers.Chats.create_widget/3
+    end
+
+    field :edit_widget, :widget do
+      arg :id, non_null(:id)
+      arg :desc, :string
+      arg :uri, :string
+
+      resolve &AchatdemyWeb.Resolvers.Chats.edit_widget/3
+    end
+
+    field :delete_widget, :widget do
+      arg :id, non_null(:id)
+
+      resolve &AchatdemyWeb.Resolvers.Chats.delete_widget/3
+    end
   end
 
   subscription do
@@ -147,6 +169,42 @@ defmodule AchatdemyWeb.Schema do
 
       trigger :create_message, topic: fn message ->
         message.chat_id
+      end
+    end
+
+    field :widget_added, :widget do
+      arg :chat_id, non_null(:id)
+
+      config fn args, _ ->
+        {:ok, topic: args.chat_id}
+      end
+
+      trigger :create_widget, topic: fn widget ->
+        widget.chat_id
+      end
+    end
+
+    field :widget_changed, :widget do
+      arg :chat_id, non_null(:id)
+
+      config fn args, _ ->
+        {:ok, topic: args.chat_id}
+      end
+
+      trigger :edit_widget, topic: fn widget ->
+        widget.chat_id
+      end
+    end
+
+    field :widget_removed, :widget do
+      arg :chat_id, non_null(:id)
+
+      config fn args, _ ->
+        {:ok, topic: args.chat_id}
+      end
+
+      trigger :delete_widget, topic: fn widget ->
+        widget.chat_id
       end
     end
   end
