@@ -74,7 +74,7 @@ defmodule AchatdemyWeb.Resolvers.Chats do
           {:ok, widget} ->
             {:ok, widget}
           _ ->
-            {:error, "Could no create widget"}
+            {:error, "Could not create widget"}
         end
     end
   end
@@ -111,7 +111,7 @@ defmodule AchatdemyWeb.Resolvers.Chats do
         {:error, "Widget does not exist."}
       true ->
         case Chats.delete_widget(widget) do
-          {:ok} ->
+          {:ok, widget} ->
             {:ok, widget}
           _ ->
             {:error, "Could not delete widget."}
