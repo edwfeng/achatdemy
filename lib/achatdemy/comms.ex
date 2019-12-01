@@ -37,12 +37,12 @@ defmodule Achatdemy.Comms do
   """
   def get_comm!(id), do: Repo.get!(Comm, id)
 
-  def get_comms(args) when is_map(args) do
+  def get_comms(args \\ %{}) when is_map(args) do
     get_comm_query(args)
     |> Repo.all
   end
 
-  def get_comm(args) when is_map(args) do
+  def get_comm(args \\ %{}) when is_map(args) do
     get_comm_query(args)
     |> Repo.one
   end

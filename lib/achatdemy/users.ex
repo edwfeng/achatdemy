@@ -37,12 +37,12 @@ defmodule Achatdemy.Users do
   """
   def get_user!(id), do: Repo.get!(User, id)
 
-  def get_users(args) when is_map(args) do
+  def get_users(args \\ %{}) when is_map(args) do
     get_user_query(args)
     |> Repo.all
   end
 
-  def get_user(args) when is_map(args) do
+  def get_user(args \\ %{}) when is_map(args) do
     get_user_query(args)
     |> Repo.one
   end
@@ -173,12 +173,12 @@ defmodule Achatdemy.Users do
     |> Repo.all()
   end
 
-  def get_perms(comms, args) when is_list(comms) and is_map(args) do
+  def get_perms(comms, args \\ %{}) when is_list(comms) and is_map(args) do
     get_perm_query(comms, args)
     |> Repo.all
   end
 
-  def get_perm(comms, args) when is_list(comms) and is_map(args) do
+  def get_perm(comms, args \\ %{}) when is_list(comms) and is_map(args) do
     get_perm_query(comms, args)
     |> Repo.one
   end
