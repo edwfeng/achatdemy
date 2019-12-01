@@ -71,7 +71,7 @@ defmodule AchatdemyWeb.Resolvers.Chats do
           {:ok, widget} ->
             {:ok, widget}
           _ ->
-            {:error, "Could not create widget"}
+            {:error, "Could not create widget."}
         end
     end
   end
