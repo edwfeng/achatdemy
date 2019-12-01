@@ -4,11 +4,12 @@ import {useQuery, useMutation} from "@apollo/react-hooks";
 import {GET_CHAT} from "./queries";
 import {Box, makeStyles, Fab} from "@material-ui/core";
 import {TextField, InputBase} from "formik-material-ui";
-import React from "react";
+import React, { useRef, createRef } from "react";
 import {Send as SendIcon} from "@material-ui/icons";
 import { Formik, Field, FormikActions, FormikProps } from "formik";
 import { lightBackground } from "./palette";
 import { AuthContext } from "./AuthState";
+import ResizeObserver from "react-resize-observer";
 import { CREATE_MESSAGE } from "./mutations";
 import { MESSAGE_CREATED_SUBSCRIPTION } from "./subscriptions";
 
@@ -83,6 +84,8 @@ export default function ChatComponent() {
             return {chat: {...prev.chat, messages: (prev.chat.messages || []).filter(msg => msg.id !== messageCreated.id).concat([messageCreated])}};
         }
     });
+
+    const messageContainerRef = createRef();
     
     if (error || (!loading && !data)) {
         let message = "Unknown error.";
@@ -118,21 +121,28 @@ export default function ChatComponent() {
                 <Box className={classes.chatHeader}>
                     <h2 style={{margin: "1em"}}>{chat.title || chat.id}</h2>
                 </Box>
-                <Box className={classes.chatBody}>
-                    <AuthContext.Consumer>{auth => {
-                        const userId = auth.id;
-                        return messages.map(message => {
-                            return (
-                                <div key={message.id} className={userId === message.user!.id ? classes.ownMessageContainer : ""}>
-                                    <div className={classes.message}>
-                                        <div className={classes.messageAuthor}>{message.user!.username || message.user!.id}</div>
-                                        <div className={classes.messageContent}>{message.msg || ""}</div>
+                <div className={classes.chatBody} ref={messageContainerRef}>
+                    <div style={{position: "relative"}}>
+                        <AuthContext.Consumer>{auth => {
+                            const userId = auth.id;
+                            return messages.map(message => {
+                                return (
+                                    <div key={message.id} className={userId === message.user!.id ? classes.ownMessageContainer : ""}>
+                                        <div className={classes.message}>
+                                            <div className={classes.messageAuthor}>{message.user!.username || message.user!.id}</div>
+                                            <div className={classes.messageContent}>{message.msg || ""}</div>
+                                        </div>
                                     </div>
-                                </div>
-                            );
-                        });
-                    }}</AuthContext.Consumer>
-                </Box>
+                                );
+                            });
+                        }}</AuthContext.Consumer>
+                        <ResizeObserver onResize={rect => {
+                            if (messageContainerRef && messageContainerRef.current) {
+                                messageContainerRef.current.scrollTop = rect.height - messageContainerRef.current.clientHeight;
+                            }
+                        }} />
+                    </div>
+                </div>
                 <Box className={classes.chatFooter}>
                     <Formik initialValues={{message: ""}} validate={(values: MessageFormValues) => {
                         return {}; 
