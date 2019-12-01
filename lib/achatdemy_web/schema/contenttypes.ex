@@ -93,6 +93,15 @@ defmodule AchatdemyWeb.Schema.ContentTypes do
     field :admin,       :boolean
   end
 
+  input_object :perm_def_input do
+    field :create_msg,  :boolean
+    field :mod_msg,     :boolean
+    field :create_chat, :boolean
+    field :mod_chat,    :boolean
+    field :mod_comm,    :boolean
+    field :admin,       :boolean
+  end
+
   object :chat do
     field :id, non_null(:id)
     field :title, :string

@@ -15,7 +15,7 @@ defmodule Achatdemy.Users.Perm do
   @doc false
   def changeset(perm, attrs) do
     perm
-    |> cast(attrs, [:chmod])
-    |> validate_required([:chmod])
+    |> cast(attrs, [:chmod, :user_id, :comm_id])
+    |> validate_required([:chmod, :user_id, :comm_id])
   end
 end
