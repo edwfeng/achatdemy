@@ -119,18 +119,28 @@ defmodule AchatdemyWeb.Resolvers.Users do
   defp delete_perm_check_dupe(args) do
     current_admins = Users.get_perms([args.comm_id])
     |> Enum.filter(fn perm -> Perms.get_perm_map(perm.chmod).admin end)
+    |> Enum.map(fn perm -> perm.user_id end)
 
     case length(current_admins) do
       1 ->
-        {:error, "Cannot remove only admin."}
-      _ ->
-        perm = Users.get_perm([args.comm_id], %{user_id: args.user_id})
-        case Users.delete_perm(perm) do
-          {:ok, perm} ->
-            {:ok, perm}
+        case Enum.member?(current_admins, args.user_id) do
+          true ->
+            {:error, "Cannot remove only admin."}
           _ ->
-            {:error, "Could not delete perm."}
+            delete_perm_modify(args)
         end
+      _ ->
+        delete_perm_modify(args)
+    end
+  end
+
+  defp delete_perm_modify(args) do
+    perm = Users.get_perm([args.comm_id], %{user_id: args.user_id})
+    case Users.delete_perm(perm) do
+      {:ok, perm} ->
+        {:ok, perm}
+      _ ->
+        {:error, "Could not delete perm."}
     end
   end
 end
