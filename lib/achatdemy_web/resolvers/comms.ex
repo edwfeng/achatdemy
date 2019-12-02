@@ -7,6 +7,11 @@ defmodule AchatdemyWeb.Resolvers.Comms do
     {:ok, Comms.get_comms(args)}
   end
 
+  def list_comms_fuzzy(_, args, _) do
+    args = Map.put_new(args, :threshold, 0.3)
+    {:ok, Comms.get_comms_fuzzy(args.name, args.threshold)}
+  end
+
   def list_comm(_, args, _) do
     {:ok, Comms.get_comm(args)}
   end

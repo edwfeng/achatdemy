@@ -11,6 +11,14 @@ defmodule AchatdemyWeb.Schema do
       resolve &AchatdemyWeb.Resolvers.Users.list_users/3
     end
 
+    @desc "Fuzzy search for users"
+    field :users_fuzzy, list_of(:user) do
+      arg :username, :string
+      @desc "[0,1), a lower threshold means a more fuzzy search (default 0.3)"
+      arg :threshold, :float
+      resolve &AchatdemyWeb.Resolvers.Users.list_users_fuzzy/3
+    end
+
     @desc "Get a user"
     field :user, :user do
       arg :id, :id
@@ -27,6 +35,14 @@ defmodule AchatdemyWeb.Schema do
     @desc "Get a list of communities"
     field :comms, list_of(:comm) do
       resolve &AchatdemyWeb.Resolvers.Comms.list_comms/3
+    end
+
+    @desc "Fuzzy search for communities"
+    field :comms_fuzzy, list_of(:comm) do
+      arg :name, :string
+      @desc "[0,1), a lower threshold means a more fuzzy search (default 0.3)"
+      arg :threshold, :float
+      resolve &AchatdemyWeb.Resolvers.Comms.list_comms_fuzzy/3
     end
 
     @desc "Get a community"

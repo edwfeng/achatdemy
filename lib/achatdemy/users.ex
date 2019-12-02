@@ -57,6 +57,13 @@ defmodule Achatdemy.Users do
     end)
   end
 
+  def get_users_fuzzy(username, threshold) do
+    from(u in User,
+      where: fragment("SIMILARITY(?, ?) > ?", u.username, ^username, ^threshold),
+      order_by: fragment("SIMILARITY(?, ?) DESC", u.username, ^username))
+    |> Repo.all
+  end
+
   def user_login(username, password) do
     user = User
            |> where(username: ^username)

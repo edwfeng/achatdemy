@@ -58,6 +58,13 @@ defmodule Achatdemy.Comms do
     end)
   end
 
+  def get_comms_fuzzy(name, threshold) do
+    from(c in Comm,
+      where: fragment("SIMILARITY(?, ?) > ?", c.name, ^name, ^threshold),
+      order_by: fragment("SIMILARITY(?, ?) DESC", c.name, ^name))
+    |> Repo.all
+  end
+
   @doc """
   Creates a comm.
 

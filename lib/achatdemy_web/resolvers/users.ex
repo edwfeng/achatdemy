@@ -6,6 +6,11 @@ defmodule AchatdemyWeb.Resolvers.Users do
     {:ok, Users.get_users(args)}
   end
 
+  def list_users_fuzzy(_, args, _) do
+    args = Map.put_new(args, :threshold, 0.3)
+    {:ok, Users.get_users_fuzzy(args.username, args.threshold)}
+  end
+
   def list_user(_, args, _) do
     {:ok, Users.get_user(args)}
   end
