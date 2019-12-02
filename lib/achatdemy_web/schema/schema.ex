@@ -182,6 +182,42 @@ defmodule AchatdemyWeb.Schema do
       end
     end
 
+    field :perm_created, :perm do
+      arg :comm_id, non_null(:id)
+
+      config fn args, _ ->
+        {:ok, topic: args.comm_id}
+      end
+
+      trigger :create_perm, topic: fn perm ->
+        perm.comm_id
+      end
+    end
+
+    field :perm_edited, :perm do
+      arg :comm_id, non_null(:id)
+
+      config fn args, _ ->
+        {:ok, topic: args.comm_id}
+      end
+
+      trigger :edit_perm, topic: fn perm ->
+        perm.comm_id
+      end
+    end
+
+    field :perm_deleted, :perm do
+      arg :comm_id, non_null(:id)
+
+      config fn args, _ ->
+        {:ok, topic: args.comm_id}
+      end
+
+      trigger :delete_perm, topic: fn perm ->
+        perm.comm_id
+      end
+    end
+
     field :message_created, :message do
       arg :chat_id, non_null(:id)
 
