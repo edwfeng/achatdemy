@@ -118,6 +118,14 @@ defmodule AchatdemyWeb.Schema do
       resolve &AchatdemyWeb.Resolvers.Users.create_perm/3
     end
 
+    field :edit_perm, :perm do
+      arg :user_id, non_null(:id)
+      arg :comm_id, non_null(:id)
+      arg :perms, :perm_def_input
+
+      resolve &AchatdemyWeb.Resolvers.Users.edit_perm/3
+    end
+
     field :create_chat, :chat do
       arg :comm_id, non_null(:id)
       arg :title, non_null(:string)
