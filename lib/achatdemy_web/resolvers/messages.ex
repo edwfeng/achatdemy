@@ -47,7 +47,33 @@ defmodule AchatdemyWeb.Resolvers.Messages do
   end
 
   def create_message(_, args, %{context: %{current_user: %{id: uid}}}) do
-    case Messages.create_message(Map.put(args, :user_id, uid)) do
+    chat = Achatdemy.Chats.get_chat!(args.chat_id)
+
+    perms = Achatdemy.Users.list_perms_uid(uid)
+    |> Enum.filter(fn perm -> perm.comm_id == chat.comm_id end)
+
+    case perms do
+      [perm | _] ->
+        case chat.user_id == uid do
+          true ->
+            create_message_helper(Map.put(args, :user_id, uid))
+          false ->
+            perm_map = Achatdemy.Perms.get_perm_map(perm.chmod)
+
+            case perm_map.create_msg do
+              true ->
+                create_message_helper(Map.put(args, :user_id, uid))
+              false ->
+                {:error, "You are not allowed to create messages in this comm."}
+            end
+        end
+      _ ->
+        {:error, "Chat does not exist."}
+    end
+  end
+
+  defp create_message_helper(args) do
+    case Messages.create_message(args) do
       {:ok, message} ->
         {:ok, message}
       _ ->

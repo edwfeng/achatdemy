@@ -85,9 +85,7 @@ defmodule AchatdemyWeb.Resolvers.Users do
 
   defp edit_perm_modify(args) do
     perm = Users.get_perm([args.comm_id], %{user_id: args.user_id})
-    chmod = Perms.get_raw_perm_map(perm.chmod)
-    |> Map.merge(args.perms)
-    |> Perms.create_perms()
+    chmod = Perms.changeset(perm.chmod, args.perms)
 
     case Users.update_perm(perm, %{chmod: chmod}) do
       {:ok, perm} ->
