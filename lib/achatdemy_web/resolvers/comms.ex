@@ -23,11 +23,10 @@ defmodule AchatdemyWeb.Resolvers.Comms do
   end
 
   def edit_comm(_, %{id: id} = args, %{context: %{current_user: %{id: uid}}}) do
-    perms = Users.list_perms_uid(uid)
-    |> Enum.filter(fn perm -> perm.comm_id == args.id end)
-
-    case perms do
-      [perm | _] ->
+    case Users.get_perm([args.id], %{user_id: uid}) do
+      nil ->
+        {:error, "Comm does not exist."}
+      perm ->
         perm_map = Perms.get_perm_map(perm.chmod)
 
         case perm_map.mod_comm do
@@ -42,8 +41,6 @@ defmodule AchatdemyWeb.Resolvers.Comms do
                 {:error, "Could not edit comm."}
             end
         end
-      _ ->
-        {:error, "Comm does not exist."}
     end
   end
 end

@@ -1,5 +1,6 @@
 defmodule AchatdemyWeb.Resolvers.Messages do
   alias Achatdemy.Messages
+  alias Achatdemy.Users
 
   def list_messages(_, args, %{context: %{current_user: %{id: uid}}}) do
     comms = Achatdemy.Users.list_perms_uid(uid)
@@ -9,14 +10,11 @@ defmodule AchatdemyWeb.Resolvers.Messages do
   end
 
   def list_message(_, %{id: id}, %{context: %{current_user: %{id: uid}}}) do
-    comms = Achatdemy.Users.list_perms_uid(uid)
-    |> Enum.map(fn perm -> perm.comm_id end)
-
     msg = Messages.get_message!(id)
     chat = Achatdemy.Chats.get_chat!(msg.chat_id)
 
-    case Enum.member?(comms, chat.comm_id) do
-      false ->
+    case Users.get_perm([chat.comm_id], %{user_id: uid}) do
+      nil ->
         {:error, "Message does not exist."}
       _ ->
         {:ok, msg}
@@ -31,15 +29,12 @@ defmodule AchatdemyWeb.Resolvers.Messages do
   end
 
   def list_file(_, %{id: id}, %{context: %{current_user: %{id: uid}}}) do
-    comms = Achatdemy.Users.list_perms_uid(uid)
-    |> Enum.map(fn perm -> perm.comm_id end)
-
     file = Messages.get_file!(id)
     msg = Messages.get_message!(file.message_id)
     chat = Achatdemy.Chats.get_chat!(msg.chat_id)
 
-    case Enum.member?(comms, chat.comm_id) do
-      false ->
+    case Users.get_perm([chat.comm_id], %{user_id: uid}) do
+      nil ->
         {:error, "File does not exist."}
       _ ->
         {:ok, file}
@@ -49,11 +44,10 @@ defmodule AchatdemyWeb.Resolvers.Messages do
   def create_message(_, args, %{context: %{current_user: %{id: uid}}}) do
     chat = Achatdemy.Chats.get_chat!(args.chat_id)
 
-    perms = Achatdemy.Users.list_perms_uid(uid)
-    |> Enum.filter(fn perm -> perm.comm_id == chat.comm_id end)
-
-    case perms do
-      [perm | _] ->
+    case Users.get_perm([chat.comm_id], %{user_id: uid}) do
+      nil ->
+        {:error, "Chat does not exist."}
+      perm ->
         case chat.user_id == uid do
           true ->
             create_message_helper(Map.put(args, :user_id, uid))
@@ -67,8 +61,6 @@ defmodule AchatdemyWeb.Resolvers.Messages do
                 {:error, "You are not allowed to create messages in this comm."}
             end
         end
-      _ ->
-        {:error, "Chat does not exist."}
     end
   end
 

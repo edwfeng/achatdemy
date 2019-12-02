@@ -22,13 +22,10 @@ defmodule AchatdemyWeb.Resolvers.Chats do
   end
 
   def list_widgets(_, %{chat_id: chat_id}, %{context: %{current_user: %{id: uid}}}) do
-    comms = Achatdemy.Users.list_perms_uid(uid)
-    |> Enum.map(fn perm -> perm.comm_id end)
-
     chat = Chats.get_chat!(chat_id)
 
-    case Enum.member?(comms, chat.comm_id) do
-      false ->
+    case Users.get_perm([chat.comm_id], %{user_id: uid}) do
+      nil ->
         {:error, "Chat does not exist."}
       _ ->
         {:ok, Chats.get_widget_chat(chat_id)}
@@ -36,14 +33,11 @@ defmodule AchatdemyWeb.Resolvers.Chats do
   end
 
   def list_widget(_, %{id: id}, %{context: %{current_user: %{id: uid}}}) do
-    comms = Achatdemy.Users.list_perms_uid(uid)
-    |> Enum.map(fn perm -> perm.comm_id end)
-
     widget = Chats.get_widget!(id)
     chat = Chats.get_chat!(widget.chat_id)
 
-    case Enum.member?(comms, chat.comm_id) do
-      false ->
+    case Users.get_perm([chat.comm_id], %{user_id: uid}) do
+      nil ->
         {:error, "Chat does not exist."}
       _ ->
         {:ok, widget}
@@ -51,11 +45,10 @@ defmodule AchatdemyWeb.Resolvers.Chats do
   end
 
   def create_chat(_, args, %{context: %{current_user: %{id: uid}}}) do
-    perms = Users.list_perms_uid(uid)
-    |> Enum.filter(fn perm -> perm.comm_id == args.comm_id end)
-
-    case perms do
-      [perm | _] ->
+    case Users.get_perm([args.comm_id], %{user_id: uid}) do
+      nil ->
+        {:error, "Comm does not exist."}
+      perm ->
         perm_map = Perms.get_perm_map(perm.chmod)
 
         case perm_map.create_chat do
@@ -69,19 +62,16 @@ defmodule AchatdemyWeb.Resolvers.Chats do
                 {:error, "Could not create chat."}
             end
         end
-      _ ->
-        {:error, "Comm does not exist."}
     end
   end
 
   def create_widget(_, args, %{context: %{current_user: %{id: uid}}}) do
     chat = Chats.get_chat!(args.chat_id)
 
-    perms = Users.list_perms_uid(uid)
-    |> Enum.filter(fn perm -> perm.comm_id == chat.comm_id end)
-
-    case perms do
-      [perm | _] ->
+    case Users.get_perm([chat.comm_id], %{user_id: uid}) do
+      nil ->
+        {:error, "Chat does not exist."}
+      perm ->
         case chat.user_id == uid do
           true ->
             create_widget_helper(args)
@@ -95,8 +85,6 @@ defmodule AchatdemyWeb.Resolvers.Chats do
                 {:error, "You are not allowed to edit chats in this comm."}
             end
         end
-      _ ->
-        {:error, "Chat does not exist."}
     end
   end
 
@@ -113,11 +101,10 @@ defmodule AchatdemyWeb.Resolvers.Chats do
     widget = Chats.get_widget!(args.id)
     chat = Chats.get_chat!(widget.chat_id)
 
-    perms = Users.list_perms_uid(uid)
-    |> Enum.filter(fn perm -> perm.comm_id == chat.comm_id end)
-
-    case perms do
-      [perm | _] ->
+    case Users.get_perm([chat.comm_id], %{user_id: uid}) do
+      nil ->
+        {:error, "Chat does not exist."}
+      perm ->
         case chat.user_id == uid do
           true ->
             edit_widget_helper(widget, args)
@@ -131,8 +118,6 @@ defmodule AchatdemyWeb.Resolvers.Chats do
                 {:error, "You are not allowed to edit chats in this comm."}
             end
         end
-      _ ->
-        {:error, "Chat does not exist."}
     end
   end
 
@@ -149,11 +134,10 @@ defmodule AchatdemyWeb.Resolvers.Chats do
     widget = Chats.get_widget!(args.id)
     chat = Chats.get_chat!(widget.chat_id)
 
-    perms = Users.list_perms_uid(uid)
-    |> Enum.filter(fn perm -> perm.comm_id == chat.comm_id end)
-
-    case perms do
-      [perm | _] ->
+    case Users.get_perm([chat.comm_id], %{user_id: uid}) do
+      nil ->
+        {:error, "Chat does not exist."}
+      perm ->
         case chat.user_id == uid do
           true ->
             delete_widget_helper(widget)
@@ -167,8 +151,6 @@ defmodule AchatdemyWeb.Resolvers.Chats do
                 {:error, "You are not allowed to edit chats in this comm."}
             end
         end
-      _ ->
-        {:error, "Chat does not exist."}
     end
   end
 

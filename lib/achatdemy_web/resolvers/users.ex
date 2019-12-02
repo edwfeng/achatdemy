@@ -22,11 +22,10 @@ defmodule AchatdemyWeb.Resolvers.Users do
   end
 
   def create_perm(_, args, %{context: %{current_user: %{id: uid}}}) do
-    u_perms = Users.list_perms_uid(uid)
-    |> Enum.filter(fn perm -> perm.comm_id == args.comm_id end)
-
-    case u_perms do
-      [u_perm | _] ->
+    case Users.get_perm([args.comm_id], %{user_id: uid}) do
+      nil ->
+        {:error, "Comm does not exist."}
+      u_perm ->
         u_perm_map = Perms.get_perm_map(u_perm.chmod)
 
         case u_perm_map.admin do
@@ -42,17 +41,14 @@ defmodule AchatdemyWeb.Resolvers.Users do
                 {:error, "Could not create perm."}
             end
         end
-      _ ->
-        {:error, "Comm does not exist."}
     end
   end
 
   def edit_perm(_, args, %{context: %{current_user: %{id: uid}}}) do
-    u_perms = Users.list_perms_uid(uid)
-    |> Enum.filter(fn perm -> perm.comm_id == args.comm_id end)
-
-    case u_perms do
-      [u_perm | _] ->
+    case Users.get_perm([args.comm_id], %{user_id: uid}) do
+      nil ->
+        {:error, "Comm does not exist."}
+      u_perm ->
         u_perm_map = Perms.get_perm_map(u_perm.chmod)
 
         case u_perm_map.admin do
@@ -61,8 +57,6 @@ defmodule AchatdemyWeb.Resolvers.Users do
           true ->
             edit_perm_check_dupe(args)
         end
-      _ ->
-        {:error, "Comm does not exist."}
     end
   end
 
@@ -96,11 +90,10 @@ defmodule AchatdemyWeb.Resolvers.Users do
   end
 
   def delete_perm(_, args, %{context: %{current_user: %{id: uid}}}) do
-    u_perms = Users.list_perms_uid(uid)
-    |> Enum.filter(fn perm -> perm.comm_id == args.comm_id end)
-
-    case u_perms do
-      [u_perm | _] ->
+    case Users.get_perm([args.comm_id], %{user_id: uid}) do
+      nil ->
+        {:error, "Comm does not exist."}
+      u_perm ->
         u_perm_map = Perms.get_perm_map(u_perm.chmod)
 
         case u_perm_map.admin do
@@ -109,8 +102,6 @@ defmodule AchatdemyWeb.Resolvers.Users do
           true ->
             delete_perm_check_dupe(args)
         end
-      _ ->
-        {:error, "Comm does not exist."}
     end
   end
 
