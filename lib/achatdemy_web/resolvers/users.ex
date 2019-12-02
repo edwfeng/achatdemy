@@ -31,7 +31,7 @@ defmodule AchatdemyWeb.Resolvers.Users do
 
         case u_perm_map.admin do
           false ->
-            {:error, "You are not allowed to modify perms in this chat."}
+            {:error, "You are not allowed to modify perms in this comm."}
           true ->
             chmod = Perms.create_perms(args.perms)
 
@@ -57,7 +57,7 @@ defmodule AchatdemyWeb.Resolvers.Users do
 
         case u_perm_map.admin do
           false ->
-            {:error, "You are not allowed to modify perms in this chat."}
+            {:error, "You are not allowed to modify perms in this comm."}
           true ->
             edit_perm_check_dupe(args)
         end
@@ -107,7 +107,7 @@ defmodule AchatdemyWeb.Resolvers.Users do
 
         case u_perm_map.admin do
           false ->
-            {:error, "You are not allowed to modify perms in this chat."}
+            {:error, "You are not allowed to modify perms in this comm."}
           true ->
             delete_perm_check_dupe(args)
         end
