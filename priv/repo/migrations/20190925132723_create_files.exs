@@ -6,6 +6,7 @@ defmodule Achatdemy.Repo.Migrations.CreateFiles do
       add :id, :uuid, primary_key: true
       add :name, :string
       add :path, :string
+      add :message_id, references(:messages, on_delete: :delete_all, type: :uuid), null: false
 
       timestamps()
     end

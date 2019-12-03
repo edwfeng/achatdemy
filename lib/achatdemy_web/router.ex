@@ -23,7 +23,7 @@ defmodule AchatdemyWeb.Router do
       forward "/graphiql", Absinthe.Plug.GraphiQL,
         schema: AchatdemyWeb.Schema,
         socket: AchatdemyWeb.UserSocket,
-        interface: :simple
+        interface: :advanced
     end
 
     forward "/", Absinthe.Plug,

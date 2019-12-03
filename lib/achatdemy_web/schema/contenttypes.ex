@@ -93,6 +93,15 @@ defmodule AchatdemyWeb.Schema.ContentTypes do
     field :admin,       :boolean
   end
 
+  input_object :perm_def_input do
+    field :create_msg,  :boolean
+    field :mod_msg,     :boolean
+    field :create_chat, :boolean
+    field :mod_chat,    :boolean
+    field :mod_comm,    :boolean
+    field :admin,       :boolean
+  end
+
   object :chat do
     field :id, non_null(:id)
     field :title, :string
@@ -183,10 +192,10 @@ defmodule AchatdemyWeb.Schema.ContentTypes do
     field :path, :string
     field :inserted_at, :naive_datetime
     field :updated_at, :naive_datetime
-    field :messages, list_of(:message) do
+    field :message, :message do
       resolve fn file, _, _ ->
-        batch({Achatdemy.Messages, :get_messages_by_files}, file.id, fn batch_results ->
-          {:ok, Map.get(batch_results, file.id)}
+        batch({Achatdemy.Messages, :get_message_by_file}, file.message_id, fn batch_results ->
+          {:ok, Map.get(batch_results, file.message_id)}
         end)
       end
     end

@@ -8,7 +8,7 @@ defmodule Achatdemy.Messages.File do
     field :name, :string
     field :path, :string
 
-    many_to_many(:messages, Achatdemy.Messages.Message, join_through: "msg_files_xref")
+    belongs_to :message, Achatdemy.Messages.Message
 
     timestamps()
   end

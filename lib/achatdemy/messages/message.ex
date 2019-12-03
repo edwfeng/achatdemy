@@ -9,7 +9,7 @@ defmodule Achatdemy.Messages.Message do
     belongs_to :chat, Achatdemy.Chats.Chat
     belongs_to :user, Achatdemy.Users.User
 
-    many_to_many(:files, Achatdemy.Messages.File, join_through: "msg_files_xref")
+    has_many :files, Achatdemy.Messages.File
 
     timestamps()
   end

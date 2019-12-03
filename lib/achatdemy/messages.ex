@@ -37,16 +37,22 @@ defmodule Achatdemy.Messages do
   """
   def get_message!(id), do: Repo.get!(Message, id)
 
-  def get_messages_chat(chat_id) do
-    Message
-    |> where(chat_id: ^chat_id)
-    |> Repo.all()
-  end
+  def get_messages(comms, args) when is_list(comms) and is_map(args) do
+    chats = Achatdemy.Chats.Chat
+    |> where([chat], chat.comm_id in ^comms)
+    |> Repo.all
+    |> Enum.map(fn chat -> chat.id end)
 
-  def get_messages_user(user_id) do
-    Message
-    |> where(user_id: ^user_id)
-    |> Repo.all()
+    query = Message
+    |> where([msg], msg.chat_id in ^chats)
+
+    args
+    |> Enum.reduce(query, fn {arg, val}, query ->
+      binding = [{arg, val}]
+      query
+      |> where(^binding)
+    end)
+    |> Repo.all
   end
 
   @doc """
@@ -145,6 +151,29 @@ defmodule Achatdemy.Messages do
   """
   def get_file!(id), do: Repo.get!(File, id)
 
+  def get_files(comms, args) when is_list(comms) and is_map(args) do
+    chats = Achatdemy.Chats.Chat
+    |> where([chat], chat.comm_id in ^comms)
+    |> Repo.all
+    |> Enum.map(fn chat -> chat.id end)
+
+    messages = Message
+    |> where([msg], msg.chat_id in ^chats)
+    |> Repo.all
+    |> Enum.map(fn chat -> chat.id end)
+
+    query = File
+    |> where([file], file.message_id in ^messages)
+
+    args
+    |> Enum.reduce(query, fn {arg, val}, query ->
+      binding = [{arg, val}]
+      query
+      |> where(^binding)
+    end)
+    |> Repo.all
+  end
+
   @doc """
   Creates a file.
 
@@ -210,21 +239,6 @@ defmodule Achatdemy.Messages do
     File.changeset(file, %{})
   end
 
-  def link_msg_file(message_id, file_id) do
-    %Achatdemy.Messages.MsgFilesXref{
-      message_id: message_id,
-      file_id: file_id
-    }
-    |> Repo.insert!
-  end
-
-  def unlink_msg_file(message_id, file_id) do
-    Achatdemy.Messages.MsgFilesXref
-    |> where(message_id: ^message_id)
-    |> where(file_id: ^file_id)
-    |> Repo.delete_all
-  end
-
   def get_files_by_messages(_model, ids) do
     Achatdemy.Messages.Message
     |> where([post], post.id in ^ids)
@@ -233,12 +247,11 @@ defmodule Achatdemy.Messages do
     |> Map.new(&{&1.id, &1.files})
   end
 
-  def get_messages_by_files(_model, ids) do
-    Achatdemy.Messages.File
-    |> where([file], file.id in ^ids)
-    |> preload(:messages)
+  def get_message_by_files(_model, ids) do
+    Achatdemy.Messages.Message
+    |> where([msg], msg.id in ^ids)
     |> Repo.all()
-    |> Map.new(&{&1.id, &1.messages})
+    |> Map.new(&{&1.id, &1})
   end
 
   def get_chat_by_messages(_model, ids) do
