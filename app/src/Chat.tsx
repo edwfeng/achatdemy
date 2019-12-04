@@ -182,7 +182,7 @@ export default function ChatComponent() {
         );
     } else if (data!.chat) {
         const chat = data!.chat;
-        const messages = chat.messages || [];
+        const messages = (chat.messages || []).sort((a, b) => new Date(a.insertedAt).getTime() - new Date(b.insertedAt).getTime());
 
         return (
             <Box className={classes.chatRoot}>
