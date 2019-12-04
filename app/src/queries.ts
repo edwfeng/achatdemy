@@ -30,6 +30,20 @@ query GetComm($id: ID!) {
 }
 `;
 
+export const GET_DETAILED_COMM = gql`
+query GetComm($id: ID!) {
+    comm(id: $id) {
+        name
+        perms {
+            user {
+                id
+                username
+            }
+        }
+    }
+}
+`;
+
 export const GET_CHAT = gql`
 query GetChat($id: ID!) {
     chat(id: $id) {
@@ -43,6 +57,19 @@ query GetChat($id: ID!) {
                 username
             }
         }
+        widgets {
+            id
+            uri
+            desc
+        }
     }
 }
 `
+
+export const GET_USERNAME = gql`
+query GetUsername($username: String!) {
+    user(username: $username) {
+        id
+    }
+}
+`;

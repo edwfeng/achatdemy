@@ -1,21 +1,27 @@
 import {useParams} from "react-router";
-import {Chat, Message} from "./interfaces";
+import {Chat, Message, Widget} from "./interfaces";
 import {useQuery, useMutation} from "@apollo/react-hooks";
 import {GET_CHAT} from "./queries";
-import {Box, makeStyles, Fab} from "@material-ui/core";
+import {Box, makeStyles, Fab, IconButton, Tooltip, Dialog, DialogTitle, DialogContent, Button} from "@material-ui/core";
 import {TextField, InputBase} from "formik-material-ui";
-import React, { useRef, createRef } from "react";
-import {Send as SendIcon} from "@material-ui/icons";
+import React, { useRef, createRef, useState } from "react";
+import {Send as SendIcon, Add, Extension as ExtensionIcon, Close as CloseIcon} from "@material-ui/icons";
 import { Formik, Field, FormikActions, FormikProps } from "formik";
 import { lightBackground } from "./palette";
 import { AuthContext } from "./AuthState";
 import ResizeObserver from "react-resize-observer";
-import { CREATE_MESSAGE } from "./mutations";
+import { CREATE_MESSAGE, CREATE_WIDGET } from "./mutations";
 import { MESSAGE_CREATED_SUBSCRIPTION } from "./subscriptions";
 
 const useStyles = makeStyles(theme => ({
-    chatMain: {
+    chatRoot: {
         width: "100%",
+        height: "100vh",
+        display: "flex",
+        flexDirection: "row"
+    },
+    chatMain: {
+        flexGrow: 1,
         height: "100vh",
         display: "flex",
         flexDirection: "column",
@@ -74,6 +80,35 @@ const useStyles = makeStyles(theme => ({
     },
     chatFooterButtonContainer: {
         paddingLeft: "1em"
+    },
+    widgetPanel: {
+        padding: "4px",
+        borderLeft: `1px solid ${lightBackground}`,
+        height: "100vh",
+        overflow: "auto",
+    },
+    widget: {
+        width: "400px",
+        height: "100vh",
+        display: "flex",
+        flexDirection: "column",
+        borderLeft: `1px solid ${lightBackground}`,
+    },
+    widgetHeader: {
+        borderBottom: `1px solid ${lightBackground}`,
+        padding: theme.spacing(1)
+    },
+    widgetBody: {
+        backgroundColor: lightBackground,
+        border: "none",
+        height: "100%",
+        width: "100%",
+        flexGrow: 1
+    },
+    closeButton: {
+        position: "absolute",
+        right: theme.spacing(1),
+        top: theme.spacing(1)
     }
 }));
 
@@ -85,6 +120,9 @@ export default function ChatComponent() {
     const { chatId } = useParams<{chatId: string}>();
     let { data, loading, error, subscribeToMore } = useQuery<{chat: Partial<Chat>}>(GET_CHAT, {variables: {id: chatId}});
 
+    const [selectedWidget, setWidget] = useState<(Widget & {chat: string}) | null>(null);
+    const [addingWidget, setAddingWidget] = useState(false);
+
     const [createMessage] = useMutation(CREATE_MESSAGE, {update(cache, {data: {create_message}}) {
         const {chat} = cache.readQuery<{chat: Partial<Chat>}>({query: GET_CHAT, variables: {id: chatId}})!;
         cache.writeQuery({
@@ -92,6 +130,17 @@ export default function ChatComponent() {
             variables: {id: chatId},
             data: {
                 chat: {...chat, messages: (chat.messages || []).filter(msg => msg.id !== create_message.id).concat([create_message])}
+            }
+        });
+    }});
+
+    const [createWidget] = useMutation(CREATE_WIDGET, {update(cache, {data: {create_widget}}) {
+        const {chat} = cache.readQuery<{chat: Partial<Chat>}>({query: GET_CHAT, variables: {id: chatId}})!;
+        cache.writeQuery({
+            query: GET_CHAT,
+            variables: {id: chatId},
+            data: {
+                chat: {...chat, widgets: (chat.widgets || []).concat([create_widget])}
             }
         });
     }});
@@ -136,48 +185,105 @@ export default function ChatComponent() {
         const messages = chat.messages || [];
 
         return (
-            <Box className={classes.chatMain}>
-                <Box className={classes.chatHeader}>
-                    <h2 style={{margin: "1em"}}>{chat.title || chat.id}</h2>
-                </Box>
-                <div className={classes.chatBody} ref={messageContainerRef}>
-                    <div style={{position: "relative"}}>
-                        <AuthContext.Consumer>{auth => {
-                            const userId = auth.id;
-                            return messages.map(message => {
-                                return (
-                                    <div key={message.id} className={userId === message.user!.id ? classes.ownMessageContainer : ""}>
-                                        <div className={classes.message}>
-                                            <div className={classes.messageAuthor}>{message.user!.username || message.user!.id}</div>
-                                            <div className={classes.messageContent}>{message.msg || ""}</div>
+            <Box className={classes.chatRoot}>
+                <Box className={classes.chatMain}>
+                    <Box className={classes.chatHeader}>
+                        <h2 style={{margin: "1em"}}>{chat.title || chat.id}</h2>
+                    </Box>
+                    <div className={classes.chatBody} ref={messageContainerRef}>
+                        <div style={{position: "relative"}}>
+                            <AuthContext.Consumer>{auth => {
+                                const userId = auth.id;
+                                return messages.map(message => {
+                                    return (
+                                        <div key={message.id} className={userId === message.user!.id ? classes.ownMessageContainer : ""}>
+                                            <div className={classes.message}>
+                                                <div className={classes.messageAuthor}>{message.user!.username || message.user!.id}</div>
+                                                <div className={classes.messageContent}>{message.msg || ""}</div>
+                                            </div>
                                         </div>
-                                    </div>
-                                );
-                            });
-                        }}</AuthContext.Consumer>
-                        <ResizeObserver onResize={rect => {
-                            if (messageContainerRef && messageContainerRef.current) {
-                                messageContainerRef.current.scrollTop = rect.height - messageContainerRef.current.clientHeight;
-                            }
-                        }} />
+                                    );
+                                });
+                            }}</AuthContext.Consumer>
+                            <ResizeObserver onResize={rect => {
+                                if (messageContainerRef && messageContainerRef.current) {
+                                    messageContainerRef.current.scrollTop = rect.height - messageContainerRef.current.clientHeight;
+                                }
+                            }} />
+                        </div>
                     </div>
-                </div>
-                <Box className={classes.chatFooter}>
-                    <Formik initialValues={{message: ""}} validate={(values: MessageFormValues) => {
-                        return {}; 
-                    }} onSubmit={(values: MessageFormValues, actions: FormikActions<MessageFormValues>) => {
-                        createMessage({variables: {chat: chatId, text: values.message}});
-                        actions.setValues({message: ""});
-                        actions.setSubmitting(false);
-                    }} render={(props: FormikProps<MessageFormValues>) => {
-                        return (
-                            <form onSubmit={props.handleSubmit} className={classes.chatFooterForm}>
-                                <Field component={InputBase} className={classes.chatFooterInput} name="message" variant="filled" margin="dense" placeholder="Message" type="text" />
-                                <div className={classes.chatFooterButtonContainer}><Fab aria-label="Send message" size="small" color="primary" type="submit"><SendIcon /></Fab></div>
-                            </form>
-                        );
-                    }} />
+                    <Box className={classes.chatFooter}>
+                        <Formik initialValues={{message: ""}} validate={(values: MessageFormValues) => {
+                            return {}; 
+                        }} onSubmit={(values: MessageFormValues, actions: FormikActions<MessageFormValues>) => {
+                            createMessage({variables: {chat: chatId, text: values.message}});
+                            actions.setValues({message: ""});
+                            actions.setSubmitting(false);
+                        }} render={(props: FormikProps<MessageFormValues>) => {
+                            return (
+                                <form onSubmit={props.handleSubmit} className={classes.chatFooterForm}>
+                                    <Field component={InputBase} className={classes.chatFooterInput} name="message" variant="filled" margin="dense" placeholder="Message" type="text" />
+                                    <div className={classes.chatFooterButtonContainer}><Fab aria-label="Send message" size="small" color="primary" type="submit"><SendIcon /></Fab></div>
+                                </form>
+                            );
+                        }} />
+                    </Box>
                 </Box>
+
+                <Box className={classes.widgetPanel}>
+                    {(chat.widgets || []).map(widget => <Box key={widget.id}>
+                        <Tooltip placement="left" title={widget.desc || "Widget"}>
+                            <IconButton color={(selectedWidget && selectedWidget.id === widget.id) ? "secondary" : "primary"} onClick={() => setWidget(Object.assign({}, widget, {chat: chatId}))}><ExtensionIcon /></IconButton>
+                        </Tooltip>
+                    </Box>)}
+                    <Box>
+                        <Tooltip placement="left" title="Add Widget">
+                            <IconButton onClick={() => setAddingWidget(true)}><Add /></IconButton>
+                        </Tooltip>
+                    </Box>
+                </Box>
+
+                {(selectedWidget && selectedWidget.chat === chatId) && <Box className={classes.widget}>
+                    <Box className={classes.widgetHeader}>
+                        <Box><IconButton onClick={() => setWidget(null)}><CloseIcon /></IconButton></Box>
+                        <h3>{selectedWidget.desc || "Widget"}</h3>
+                        <p>{selectedWidget.uri}</p>
+                    </Box>
+                    <iframe className={classes.widgetBody} src={selectedWidget.uri} />
+                </Box>}
+                <Dialog open={addingWidget} onClose={() => setAddingWidget(false)}>
+                    <DialogTitle style={{textAlign: "center"}}>Add a widget <IconButton className={classes.closeButton} onClick={() => setAddingWidget(false)}>
+                        <CloseIcon />
+                    </IconButton></DialogTitle>
+                    <DialogContent style={{width: "100%"}}>
+                        <Formik initialValues={{uri: "", desc: ""}} validate={
+                            ({uri}: {uri: string}) => ((!uri || uri.length < 1) ? {uri: "Required."} : {})
+                        } onSubmit={async ({uri, desc}: {uri: string, desc: string}, actions: FormikActions<{uri: string, desc: string}>) => {
+                            try {
+                                await createWidget({variables: {chat: chatId, uri, desc}});
+                                actions.setSubmitting(false);
+                                setAddingWidget(false);
+                            } catch (e) {
+                                console.log(e);
+                                actions.setErrors({uri: "An internal error occurred"});
+                                actions.setSubmitting(false);
+                            }
+                        }} render={(props: FormikProps<{uri: string, desc: string}>) => { return (
+                            <form onSubmit={props.handleSubmit}>
+                                <Box>
+                                    <Field component={TextField} name="uri" variant="outlined" margin="dense" label="Widget URL" type="url" required />
+                                </Box>
+                                <Box>
+                                    <Field component={TextField} name="desc" variant="outlined" margin="dense" label="Name" type="text" required />
+                                </Box>
+                                <Box style={{margin: "1em 0"}}>
+                                    <Button variant="outlined" type="submit" style={{marginRight: "1em"}}>Cancel</Button>
+                                    <Button variant="outlined" color="secondary" type="submit" disabled={props.isSubmitting || !props.isValid}><Add /> Create</Button>
+                                </Box>
+                            </form>
+                        )}} />
+                    </DialogContent>
+                </Dialog>
             </Box>
         );
     } else {

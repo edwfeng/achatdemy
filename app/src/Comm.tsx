@@ -4,10 +4,10 @@ import {useQuery, useMutation} from "@apollo/react-hooks";
 import {Community} from "./interfaces";
 import {GET_COMM} from "./queries";
 import {CREATE_CHAT} from "./mutations";
-import {Box, List, ListItem, ListSubheader, makeStyles, Fab, IconButton} from "@material-ui/core";
+import {Box, List, ListItem, ListSubheader, makeStyles, Fab, IconButton, ListItemIcon} from "@material-ui/core";
 import {lightBackground} from "./palette";
 import {NavLink} from "react-router-dom";
-import { AddCircle as Add } from "@material-ui/icons";
+import { AddCircle as Add, Group as GroupIcon } from "@material-ui/icons";
 import { Formik, FormikProps, Field, FormikActions } from "formik";
 import { TextField } from "formik-material-ui";
 
@@ -33,6 +33,9 @@ const styles = makeStyles(theme => ({
         color: "white",
         "&:hover, &:focus": {
             backgroundColor: theme.palette.primary.dark
+        },
+        "& .MuiListItemIcon-root": {
+            color: "white"
         }
     },
     addChatForm: {
@@ -95,6 +98,7 @@ export default function Comm({children}: {children: any}) {
                 <Box className={classes.commMain}>
                     {comm.name && (<h1 className={classes.commHeader}>{comm.name}</h1>)}
                     <List>
+                        <ListItem button to={`/comms/${id}/manage`} component={NavLink} activeClassName={classes.activeChat}><ListItemIcon><GroupIcon /></ListItemIcon> Manage users</ListItem>
                         <ListSubheader className={classes.commSubheader}>Questions</ListSubheader>
                         {chats.map(chat => {
                             return (
@@ -119,7 +123,7 @@ export default function Comm({children}: {children: any}) {
                             }} render={(props: FormikProps<{title: string}>) => { return (
                                 <form onSubmit={props.handleSubmit} className={classes.addChatForm}>
                                     <Field component={TextField} name="title" variant="standard" margin="dense" label="Ask a question..." type="text" required />
-                                    <IconButton aria-label="New question" size="small" color="primary" type="submit" className={classes.addChatButton}><Add /></IconButton>
+                                    <IconButton aria-label="New question" size="small" color="primary" type="submit" className={classes.addChatButton} disabled={props.isSubmitting || !props.isValid}><Add /></IconButton>
                                 </form>
                             )}} />
                         </ListItem>

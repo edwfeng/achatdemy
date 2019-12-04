@@ -15,6 +15,7 @@ export interface Community {
     id: string;
     name: string | undefined;
     chats: Chat[];
+    perms: Permission[];
 }
 
 export interface Chat {
@@ -24,6 +25,7 @@ export interface Chat {
     insertedAt: string;
     updatedAt: string;
     messages: Message[];
+    widgets: Widget[];
 }
 
 export interface Message {
@@ -31,4 +33,10 @@ export interface Message {
     insertedAt: string;
     msg: string | undefined;
     user: User | undefined;
+}
+
+export interface Widget {
+    id: string;
+    uri: string;
+    desc: string;
 }

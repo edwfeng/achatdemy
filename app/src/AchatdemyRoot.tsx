@@ -18,6 +18,7 @@ import {ApolloProvider} from '@apollo/react-hooks';
 import Comm from "./Comm";
 import Chat from "./Chat";
 import { getMainDefinition } from 'apollo-utilities';
+import ManageComm from './ManageComm';
 
 const httpLink = createHttpLink({uri: "/api"});
 const wsLink = createAbsintheSocketLink(AbsintheSocket.create(
@@ -75,6 +76,7 @@ class AchatdemyRoot extends React.Component {
                             <Route path="/comms/:commId"><Comm>
                                 <Switch>
                                     <Route path="/comms/:commId/chats/:chatId"><Chat /></Route>
+                                    <Route exact path="/comms/:commId/manage"><ManageComm /></Route>
                                 </Switch>
                             </Comm></Route>
                         </Switch>
